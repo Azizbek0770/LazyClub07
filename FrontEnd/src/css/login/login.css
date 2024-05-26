@@ -1,0 +1,88 @@
+/* login.css */
+.body1 {
+    background: linear-gradient(300deg,#003e63,#008997,#14b6ff,#3bffe0);
+    background-size: 240% 240%;
+    animation: gradient-animation 24s ease infinite;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+}
+@keyframes gradient-animation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ffffff55;
+    box-shadow: 0px 0px 10px 5px #fffcfc55;
+    margin-top: 200px;
+}
+
+.login-title {
+    text-align: center;
+    color: #dedede;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: rgba(210, 210, 210, 0.74);
+    border: 1px solid #00ff0d;
+    border-radius: 5px;
+}
+.login-form input::placeholder {
+    color: white;
+    font-size: 16px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #003f1d;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+.login-form p {
+    margin-top: 20px;
+    text-align: center;
+    color: #e7e7e7;
+}
+
+.login-form p a {
+    color: #daecff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-form p a:hover {
+    text-decoration: underline;
+}

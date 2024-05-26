@@ -1,10 +1,18 @@
-// Navigation.jsx
 import React from "react";
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from './auth/authSlice';  // Update the path as per your project structure
 import Logo from '../css/logo-no-background.png';
 import Dropdown from '../components/dropdown'; // Make sure to import the correct component
 
 const Navigation = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
       <div className="container">
@@ -13,22 +21,19 @@ const Navigation = () => {
             type="button"
             className="navbar-toggle collapsed"
             data-toggle="collapse"
-            data-target="#bs-example-navbar-collapse-1"
+            data-target="#navbar-collapse"
           >
-            <span className="sr-only">Toggle navigation</span>{" "}
-            <span className="icon-bar"></span>{" "}
-            <span className="icon-bar"></span>{" "}
-            <span className="icon-bar"></span>{" "}
+            <span className="sr-only">Toggle navigation</span>
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
           </button>
           <Link to="/" className="navbar-brand page-scroll">
             <img alt="Logo" src={Logo} />
-          </Link>{" "}
+          </Link>
         </div>
 
-        <div
-          className="collapse navbar-collapse"
-          id="bs-example-navbar-collapse-1"
-        >
+        <div className="collapse navbar-collapse" id="navbar-collapse">
           <ul className="nav navbar-nav navbar-right">
             <li>
               <Dropdown />
@@ -63,20 +68,13 @@ const Navigation = () => {
                 Kontakt
               </Link>
             </li>
-            <li>
-              <button className="btrt1">
-                <Link to={'/Register'} className="auth1">
-                  Register
-                </Link>
-              </button>
-            </li>
-            <li>
-              <button className="btrt1">
-                <Link to={'/Login'} className="auth1">
-                  Kirish
-                </Link>
-              </button>
-            </li>
+              <li>
+                <button className="btrt1">
+                  <Link to={'/login'} className="auth1">
+                    Kirish
+                  </Link>
+                </button>
+              </li>
           </ul>
         </div>
       </div>

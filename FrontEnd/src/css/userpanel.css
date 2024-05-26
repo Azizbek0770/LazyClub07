@@ -1,0 +1,11 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.user-panel {
+    min-width: 50vw;
+    min-height: 80vh;
+    margin: 100px;
+
+}

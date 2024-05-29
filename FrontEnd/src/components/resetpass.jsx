@@ -1,66 +1,37 @@
-// reset.jsx
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+// ResetPassword.js
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword } from './auth/authSlice';
-import "../css/login/login.css";
-import Spinner from "./Spinner";
 
-const ResetPass = () => {
-    const [formData, setFormData] = useState({
-        "email": "",
-    });
+const ResetPassword = () => {
+  const [email, setEmail] = useState('');
+  const dispatch = useDispatch();
+  const { isLoading, isSuccess, isError, message } = useSelector((state) => state.auth);
 
-    const { email } = formData;
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(resetPassword({ email }));
+  };
 
-    const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
-
-    const handleChange = (e) => {
-        setFormData((prev) => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const userData = { email };
-        dispatch(resetPassword(userData));
-    };
-
-    useEffect(() => {
-        if (isError) {
-            toast.error(message);
-        }
-        if (isSuccess) {
-            navigate("/");
-            toast.success("A reset password email has been sent to you.");
-        }
-    }, [isError, isSuccess, message, navigate, dispatch]);
-
-    return (
-        <div className="container auth__container">
-            <h1 className="main__title">Reset Password</h1>
-
-            {isLoading && <Spinner />}
-
-            <form className="auth__form tr2" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="email"
-                    name="email"
-                    onChange={handleChange}
-                    value={email}
-                    required
-                />
-                <br />
-                <button className="btn btn-primary" type="submit">Reset Password</button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="reset-password-container">
+      <h2>Reset Password</h2>
+      {isSuccess && <p className="success-message">{message}</p>}
+      {isError && <p className="error-message">{message}</p>}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Reset Password'}
+        </button>
+      </form>
+    </div>
+  );
 };
 
-export default ResetPass;
+export default ResetPassword;

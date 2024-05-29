@@ -1,6 +1,6 @@
 /* login.css */
 .body1 {
-    background: linear-gradient(300deg,#003e63,#008997,#14b6ff,#3bffe0);
+    background: linear-gradient(300deg,#003f30,#0f548c,#004a6cf0,#005d4f);
     background-size: 240% 240%;
     animation: gradient-animation 24s ease infinite;
     width: 100vw;

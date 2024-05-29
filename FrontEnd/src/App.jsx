@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Change import statement to use Router instead of Routes
 import Navigation from "./components/navigation";
 import { Header } from "./components/header";
 import { Features } from "./components/features";
@@ -11,11 +11,12 @@ import { Contact } from "./components/contact";
 import Register from './components/register';
 import Login from './components/login';
 import ResetPass from './components/resetpass';
+import ResetPasswordConfirm from './components/resetpasscon';
 import UserActivate from './components/activation';
 import UserPanel from './components/userpanel';
 import JsonData from "./data/data.json";
 import SmoothScroll from "smooth-scroll";
-import Spinner from './components/Spinner'; // Import the Spinner component
+import Spinner from './components/Spinner';
 import "./App.css";
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -25,18 +26,18 @@ export const scroll = new SmoothScroll('a[href*="#"]', {
 
 const App = () => {
   const [landingPageData, setLandingPageData] = useState({});
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    // Simulate a network request
+ 
     setTimeout(() => {
       setLandingPageData(JsonData);
-      setLoading(false); // Set loading to false after data is loaded
-    }, 2000); // Adjust the timeout duration as needed
+      setLoading(false);
+    }, 2000);
   }, []);
 
   if (loading) {
-    return <Spinner />; // Render spinner while loading
+    return <Spinner />;
   }
 
   return (
@@ -53,6 +54,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPass />} />
+        <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
         <Route path="/activate/:uid/:token" element={<UserActivate />} />
         <Route path="/user-panel" element={<UserPanel />} />
       </Routes>

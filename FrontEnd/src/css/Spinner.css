@@ -2,16 +2,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full screen height */
+    height: 100vh;
+    background-color: #002f3b;
   }
   
   .spinner {
-    border: 10px solid #f3f3f3; /* Light grey */
-    border-top: 10px solid #3498db; /* Blue */
+    border: 3px solid #ffffff; /* Light grey */
+    border-top: 3px solid #0099ff; /* Blue */
     border-radius: 50%;
-    width: 160px;
-    height: 160px;
+    width: 60px;
+    height: 60px;
     animation: spin 1s linear infinite;
+    background-color: transparent;
   }
   
   @keyframes spin {

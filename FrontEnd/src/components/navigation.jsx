@@ -29,7 +29,7 @@ const Navigation = () => {
             <span className="icon-bar"></span>
           </button>
           <Link to="/" className="navbar-brand page-scroll">
-            <img alt="Logo" src={Logo} />
+            <img className="Logo" alt="Logo" src={Logo} />
           </Link>
         </div>
 

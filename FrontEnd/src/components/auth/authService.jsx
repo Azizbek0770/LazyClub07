@@ -1,4 +1,3 @@
-// authService.jsx
 import axios from 'axios';
 
 const BACKEND_DOMAIN = 'http://127.0.0.1:8000';
@@ -23,8 +22,7 @@ const register = async (userData) => {
         localStorage.setItem('user', JSON.stringify(user));
         return user;
     } catch (error) {
-        console.log(error.response.data); 
-        throw error;
+        handleError(error, 'Registration failed');
     }
 };
 
@@ -35,15 +33,9 @@ const login = async (userData) => {
         localStorage.setItem('user', JSON.stringify(user));
         return user;
     } catch (error) {
-        if (error.response) {
-            console.error('Server responded with an error:', error.response.data);
-        } else {
-            console.error('Error sending request:', error.message);
-        }
-        throw error;
+        handleError(error, 'Login failed');
     }
 };
-
 
 const logout = async () => {
     localStorage.removeItem('user');
@@ -58,43 +50,48 @@ const getUserInfo = async (token) => {
         });
         return response.data;
     } catch (error) {
+        console.error('Response error getting user info:', error.response.data);
         throw error;
     }
 };
 
 const resetPassword = async (resetData) => {
     try {
-        // Check if the password and confirmation password match
-        if (resetData.new_password !== resetData.confirm_password) {
-            throw new Error("Passwords don't match");
-        }
-
-        // Make a request to reset password
         const response = await axios.post(RESET_PASSWORD_URL, resetData, config);
-        // Return the response
         return response.data;
     } catch (error) {
-        throw error;
+        handleError(error, 'Password reset failed');
     }
 };
 
 const confirmResetPassword = async (confirmData) => {
     try {
-        // Make a request to confirm the password reset
         const response = await axios.post(CONFIRM_PASSWORD_URL, confirmData, config);
-        // Return the response
         return response.data;
     } catch (error) {
-        throw error;
+        handleError(error, 'Password reset confirmation failed');
     }
 };
 
 const activateAccount = async (activationData) => {
     try {
         const response = await axios.post(ACTIVATE_USER_URL, activationData, config);
-        return response;
+        return response.data;
     } catch (error) {
-        throw error;
+        handleError(error, 'Account activation failed');
+    }
+};
+
+const handleError = (error, defaultMessage) => {
+    if (error.response) {
+        console.error('Response error:', error.response.data);
+        throw new Error(error.response.data.detail || defaultMessage);
+    } else if (error.request) {
+        console.error('No response received:', error.request);
+        throw new Error('No response received from server');
+    } else {
+        console.error('Error setup:', error.message);
+        throw new Error('Request setup error');
     }
 };
 

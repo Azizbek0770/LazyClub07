@@ -10,7 +10,7 @@ export const Header = (props) => {
    
             <div className="row">
               <div className="col-md-8 col-md-offset-2 intro-text">
-                <h1 className="text1">Hello!</h1>
+                <h1 className="text1">Welcome to <span className="Lazyl">LazyClub</span></h1>
 
                 <a
                   href="/features"

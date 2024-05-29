@@ -1,4 +1,3 @@
-// authSlice.jsx
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from './authService';
 
@@ -7,6 +6,7 @@ const initialState = {
     userInfo: null,
     isLoading: false,
     isError: false,
+    isSuccess: false,
     message: '',
     resettingPassword: false,
     resetPasswordError: null,
@@ -14,12 +14,12 @@ const initialState = {
     activationError: null,
 };
 
+// Async Thunks
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
     try {
         return await authService.register(userData);
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.detail) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(error.message);
     }
 });
 
@@ -27,8 +27,7 @@ export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) =
     try {
         return await authService.login(userData);
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.detail) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(error.message);
     }
 });
 
@@ -43,18 +42,25 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkA
         const token = state.auth.user ? state.auth.user.access : null;
         return await authService.getUserInfo(token);
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.detail) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(error.message);
     }
 });
 
 export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
     try {
-        await authService.resetPassword(resetData);
-        return null; // No data to return after successful reset
+        const response = await authService.resetPassword(resetData);
+        return response;
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.detail) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
+export const confirmResetPassword = createAsyncThunk('auth/confirmResetPassword', async (confirmData, thunkAPI) => {
+    try {
+        const response = await authService.confirmResetPassword(confirmData);
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
     }
 });
 
@@ -63,11 +69,11 @@ export const activateAccount = createAsyncThunk('auth/activateAccount', async (a
         const response = await authService.activateAccount(activationData);
         return response.data;
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.detail) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(error.message);
     }
 });
 
+// Slice
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -76,33 +82,8 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = false;
             state.isError = false;
+           
             state.message = '';
-        },
-        resetError: (state) => {
-            state.isError = false;
-            state.message = '';
-        },
-        startPasswordReset(state) {
-            state.resettingPassword = true;
-            state.resetPasswordError = null;
-        },
-        passwordResetSuccess(state) {
-            state.resettingPassword = false;
-        },
-        passwordResetFailure(state, action) {
-            state.resettingPassword = false;
-            state.resetPasswordError = action.payload;
-        },
-        startActivatingAccount(state) {
-            state.activatingAccount = true;
-            state.activationError = null;
-        },
-        accountActivationSuccess(state) {
-            state.activatingAccount = false;
-        },
-        accountActivationFailure(state, action) {
-            state.activatingAccount = false;
-            state.activationError = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -141,7 +122,7 @@ const authSlice = createSlice({
             })
             .addCase(logout.fulfilled, (state) => {
                 state.user = null;
-                localStorage.removeItem('user'); // Remove user from local storage on logout
+                localStorage.removeItem('user');
             })
             .addCase(getUserInfo.pending, (state) => {
                 state.isLoading = true;
@@ -161,12 +142,31 @@ const authSlice = createSlice({
                 state.resettingPassword = true;
                 state.resetPasswordError = null;
             })
-            .addCase(resetPassword.fulfilled, (state) => {
+            .addCase(resetPassword.fulfilled, (state, action) => {
                 state.resettingPassword = false;
+                state.isSuccess = true;
+                state.message = 'Password reset email sent';
             })
             .addCase(resetPassword.rejected, (state, action) => {
                 state.resettingPassword = false;
                 state.resetPasswordError = action.payload;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(confirmResetPassword.pending, (state) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.message = '';
+            })
+            .addCase(confirmResetPassword.fulfilled, (state) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.message = 'Password reset successful';
+            })
+            .addCase(confirmResetPassword.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
             })
             .addCase(activateAccount.pending, (state) => {
                 state.activatingAccount = true;
@@ -182,5 +182,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { resetState, resetError, startPasswordReset, passwordResetSuccess, passwordResetFailure, startActivatingAccount, accountActivationSuccess, accountActivationFailure } = authSlice.actions;
+export const { resetState } = authSlice.actions;
 export default authSlice.reducer;

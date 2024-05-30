@@ -1,8 +1,9 @@
+// RegisterPage.jsx
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { BiUser } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, resetPassword } from './auth/authSlice';
+import { register, resetState } from './auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import Spinner from './Spinner';
 import '../css/register.css';
@@ -45,6 +46,7 @@ const RegisterPage = () => {
         email,
         gender,
         password,
+        re_password,
       };
       dispatch(register(userData));
     }
@@ -56,82 +58,88 @@ const RegisterPage = () => {
     }
 
     if (isSuccess || user) {
-      navigate('/');
+      // navigate('/login');
       toast.success('An activation email has been sent to your email. Please check your email');
+      dispatch(resetState());
+      setFormData({
+        first_name: '',
+        last_name: '',
+        username: '',
+        email: '',
+        gender: '',
+        password: '',
+        re_password: '',
+      });
     }
 
-    dispatch(resetPassword());
   }, [isError, isSuccess, user, message, navigate, dispatch]);
 
   return (
-
     <div className='body'>
-
-    <div className="register-container">
-      {isLoading && <Spinner />}
-
-      <form className="register-form" onSubmit={handleSubmit}>
-      <h1 className="register-title">
-      Register <BiUser />
-    </h1>
-        <input
-          type="text"
-          placeholder="First Name"
-          name="first_name"
-          onChange={handleChange}
-          value={first_name}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          name="last_name"
-          onChange={handleChange}
-          value={last_name}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Username"
-          name="username"
-          onChange={handleChange}
-          value={username}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          onChange={handleChange}
-          value={email}
-          required
-        />
-        <select name="gender" onChange={handleChange} value={gender} required>
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={handleChange}
-          value={password}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Retype Password"
-          name="re_password"
-          onChange={handleChange}
-          value={re_password}
-          required
-        />
-        <button className="register-button" type="submit">
-          Register
-        </button>
-      </form>
-    </div>
+      <div className="register-container">
+        {isLoading && <Spinner />}
+        <form className="register-form" onSubmit={handleSubmit}>
+          <h1 className="register-title">
+            Register <BiUser />
+          </h1>
+          <input
+            type="text"
+            placeholder="First Name"
+            name="first_name"
+            onChange={handleChange}
+            value={first_name}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            name="last_name"
+            onChange={handleChange}
+            value={last_name}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            onChange={handleChange}
+            value={username}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            name="email"
+            onChange={handleChange}
+            value={email}
+            required
+          />
+          <select name="gender" onChange={handleChange} value={gender} required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={handleChange}
+            value={password}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Retype Password"
+            name="re_password"
+            onChange={handleChange}
+            value={re_password}
+            required
+          />
+          <button className="register-button" type="submit">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

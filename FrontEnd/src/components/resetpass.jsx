@@ -1,7 +1,10 @@
-// ResetPassword.js
+// ResetPassword.jsx
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword } from './auth/authSlice';
+import { toast } from 'react-toastify';
+import Spinner from './Spinner';
+import '../css/reset-password.css';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +30,7 @@ const ResetPassword = () => {
           required
         />
         <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Reset Password'}
+          {isLoading ? <Spinner /> : 'Reset Password'}
         </button>
       </form>
     </div>

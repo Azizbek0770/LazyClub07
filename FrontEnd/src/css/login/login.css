@@ -1,23 +1,25 @@
 /* login.css */
 .body1 {
-    background: linear-gradient(300deg,#003f30,#0f548c,#004a6cf0,#005d4f);
+    background: linear-gradient(300deg, #003f30, #0f548c, #004a6cf0, #005d4f);
     background-size: 240% 240%;
     animation: gradient-animation 24s ease infinite;
     width: 100vw;
     height: 100vh;
     position: absolute;
 }
+
 @keyframes gradient-animation {
     0% {
-      background-position: 0% 50%;
+        background-position: 0% 50%;
     }
     50% {
-      background-position: 100% 50%;
+        background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+        background-position: 0% 50%;
     }
-  }
+}
+
 .login-container {
     width: 100%;
     max-width: 400px;
@@ -49,6 +51,7 @@
     border: 1px solid #00ff0d;
     border-radius: 5px;
 }
+
 .login-form input::placeholder {
     color: white;
     font-size: 16px;

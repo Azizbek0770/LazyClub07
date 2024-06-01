@@ -48,6 +48,7 @@ const RegisterPage = () => {
         password,
         re_password,
       };
+      console.log('Registering user with data:', userData); // Log the data to see what is being sent
       dispatch(register(userData));
     }
   };
@@ -55,10 +56,11 @@ const RegisterPage = () => {
   useEffect(() => {
     if (isError) {
       toast.error(message);
+      console.error('Registration error:', message); // Log the error message
     }
 
     if (isSuccess || user) {
-      // navigate('/login');
+      navigate('/checkout');
       toast.success('An activation email has been sent to your email. Please check your email');
       dispatch(resetState());
       setFormData({
@@ -71,7 +73,6 @@ const RegisterPage = () => {
         re_password: '',
       });
     }
-
   }, [isError, isSuccess, user, message, navigate, dispatch]);
 
   return (

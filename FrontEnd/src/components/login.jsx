@@ -1,8 +1,7 @@
-// LoginForm.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, resetState } from './auth/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '../css/login/login.css';
 
@@ -11,7 +10,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+    const { isLoading, isError, message } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -22,13 +21,17 @@ const LoginForm = () => {
         if (isError) {
             toast.error(message);
         }
-
-        if (isSuccess && user) {
-            navigate('/userpanel');
+        
+        // If login is successful, navigate to user panel
+        if (!isLoading && !isError) {
+            // navigate('/user-panel');
         }
 
-        dispatch(resetState());
-    }, [isError, isSuccess, user, message, navigate, dispatch]);
+        // Reset the auth state on component unmount
+        return () => {
+            dispatch(resetState());
+        };
+    }, [isLoading, isError, message, navigate, dispatch]);
 
     return (
         <div className="body1">
@@ -50,6 +53,10 @@ const LoginForm = () => {
                     <button type="submit" disabled={isLoading}>
                         {isLoading ? 'Loading...' : 'Login'}
                     </button>
+
+                    <p>Don't have an account? <Link to="/register">Register</Link></p>
+                    <br />
+                    <p>Forgot password? <Link to="/reset-password">Reset password</Link></p>
                 </form>
             </div>
         </div>

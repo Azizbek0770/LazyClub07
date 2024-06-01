@@ -1,0 +1,17 @@
+.check-email-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #25354b;
+    box-shadow: 0px 0px 10px 5px #fffcfc55;
+    margin-top: 200px;
+    text-align: center;
+}
+
+.check-email-title {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}

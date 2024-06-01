@@ -14,20 +14,23 @@ const initialState = {
     activationError: null,
 };
 
-// Async Thunks
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
     try {
-        return await authService.register(userData);
+        const response = await authService.register(userData);
+        return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
-        return await authService.login(userData);
+        const response = await authService.login(userData);
+        return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
@@ -40,40 +43,44 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkA
     try {
         const state = thunkAPI.getState();
         const token = state.auth.user ? state.auth.user.access : null;
-        return await authService.getUserInfo(token);
+        const response = await authService.getUserInfo(token);
+        return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
-export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
+export const resetPassword = createAsyncThunk('auth/reset-password', async (resetData, thunkAPI) => {
     try {
         const response = await authService.resetPassword(resetData);
-        return response;
+        return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
-export const confirmResetPassword = createAsyncThunk('auth/confirmResetPassword', async (confirmData, thunkAPI) => {
+export const confirmResetPassword = createAsyncThunk('auth/confirm-reset-password', async (confirmData, thunkAPI) => {
     try {
         const response = await authService.confirmResetPassword(confirmData);
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
-export const activateAccount = createAsyncThunk('auth/activateAccount', async (activationData, thunkAPI) => {
+export const activateAccount = createAsyncThunk('auth/activate', async (activationData, thunkAPI) => {
     try {
         const response = await authService.activateAccount(activationData);
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.message);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
-// Slice
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -82,7 +89,6 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = false;
             state.isError = false;
-           
             state.message = '';
         },
     },
@@ -97,6 +103,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = action.payload;
                 state.isError = false;
+                state.isSuccess = true;
                 state.message = 'Registration successful';
             })
             .addCase(register.rejected, (state, action) => {
@@ -113,6 +120,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = action.payload;
                 state.isError = false;
+                state.isSuccess = true;
                 state.message = 'Login successful';
             })
             .addCase(login.rejected, (state, action) => {
@@ -174,10 +182,14 @@ const authSlice = createSlice({
             })
             .addCase(activateAccount.fulfilled, (state) => {
                 state.activatingAccount = false;
+                state.isSuccess = true;
+                state.message = 'Account activated successfully';
             })
             .addCase(activateAccount.rejected, (state, action) => {
                 state.activatingAccount = false;
                 state.activationError = action.payload;
+                state.isError = true;
+                state.message = action.payload;
             });
     },
 });

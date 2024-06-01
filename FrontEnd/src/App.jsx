@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Change import statement to use Router instead of Routes
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from "./components/navigation";
 import { Header } from "./components/header";
 import { Features } from "./components/features";
@@ -12,11 +12,13 @@ import Register from './components/register';
 import Login from './components/login';
 import ResetPass from './components/resetpass';
 import ResetPasswordConfirm from './components/resetpasscon';
-import UserActivate from './components/activation';
+import ActivateAccountForm from './components/activation';
 import UserPanel from './components/userpanel';
 import JsonData from "./data/data.json";
 import SmoothScroll from "smooth-scroll";
 import Spinner from './components/Spinner';
+import Warning from './components/warning';
+// import Lesson1 from './components/Lessons/Lesson1'
 import "./App.css";
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -29,7 +31,6 @@ const App = () => {
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
- 
     setTimeout(() => {
       setLandingPageData(JsonData);
       setLoading(false);
@@ -41,24 +42,25 @@ const App = () => {
   }
 
   return (
-    <div>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Header data={landingPageData.Header} />} />
-        <Route path="/features" element={<Features data={landingPageData.Features} />} />
-        <Route path="/about" element={<About data={landingPageData.About} />} />
-        <Route path="/gallery" element={<Gallery data={landingPageData.Gallery} />} />
-        <Route path="/testimonials" element={<Testimonials data={landingPageData.Testimonials} />} />
-        <Route path="/team" element={<Team data={landingPageData.Team} />} />
-        <Route path="/contact" element={<Contact data={landingPageData.Contact} />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/reset-password" element={<ResetPass />} />
-        <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
-        <Route path="/activate/:uid/:token" element={<UserActivate />} />
-        <Route path="/user-panel" element={<UserPanel />} />
-      </Routes>
-    </div>
+      <div>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Header data={landingPageData.Header} />} />
+          <Route path="/features" element={<Features data={landingPageData.Features} />} />
+          <Route path="/about" element={<About data={landingPageData.About} />} />
+          <Route path="/gallery" element={<Gallery data={landingPageData.Gallery} />} />
+          <Route path="/testimonials" element={<Testimonials data={landingPageData.Testimonials} />} />
+          <Route path="/team" element={<Team data={landingPageData.Team} />} />
+          <Route path="/contact" element={<Contact data={landingPageData.Contact} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPass />} />
+          <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
+          <Route path="/auth/activate/:uid/:token" element={<ActivateAccountForm />} />
+          <Route path="/user-panel" element={<UserPanel />} />
+          <Route path="/checkout" element={<Warning />} />
+        </Routes>
+      </div>
   );
 };
 

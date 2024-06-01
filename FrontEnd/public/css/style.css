@@ -102,6 +102,7 @@ hr {
   border-bottom-right-radius: 10px;
   display: block;
   background-color: #062e2a;
+  z-index: 4;
 }
 #menu.navbar-default {
   background-color: #05161A;

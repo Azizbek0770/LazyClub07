@@ -1,11 +1,31 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-.user-panel {
-    min-width: 50vw;
-    min-height: 80vh;
-    margin: 100px;
-
-}
+/* userpanel.css */
+.user_panel_container {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .user_panel_container h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #333333;
+  }
+  
+  .user_panel_container button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .user_panel_container button:hover {
+    background-color: #0056b3;
+  }
+  

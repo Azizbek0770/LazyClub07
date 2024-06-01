@@ -1,5 +1,86 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* activate.css */
+
+.activate-body {
+    background: linear-gradient(300deg, #003f30, #0f548c, #004a6cf0, #005d4f);
+    background-size: 240% 240%;
+    animation: gradient-animation 24s ease infinite;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.activate-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ffffff55;
+    box-shadow: 0px 0px 10px 5px #fffcfc55;
+    margin-top: 200px;
+}
+
+.activate-title {
+    text-align: center;
+    color: #dedede;
+}
+
+.activate-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activate-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: rgba(210, 210, 210, 0.74);
+    border: 1px solid #00ff0d;
+    border-radius: 5px;
+}
+
+.activate-form input::placeholder {
+    color: white;
+    font-size: 16px;
+}
+
+.activate-button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #003f1d;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.activate-button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: rgb(255, 123, 0);
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
 }

@@ -1,0 +1,33 @@
+.container {
+    width: 80vw;
+    height: 100vh;
+    background-color: rgb(234, 181, 100);
+    margin: auto;
+    z-index: 3;
+  }
+  
+  .title {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+  }
+  
+  .subTitle {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .list {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .listItem {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+  }
+  

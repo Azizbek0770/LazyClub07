@@ -30,7 +30,7 @@ const CustomDropdown = () => {
         MORE COURSES
       </button>
       <div className={`custom-dropdown-content ${showDropdown ? "show" : ""}`}>
-        <Link to="#">Course 1</Link>
+        <Link to="/lesson1">FullStack</Link>
         <Link to="#">Course 2</Link>
         <Link to="#">Course 3</Link>
       </div>

@@ -1,28 +1,58 @@
-import React from 'react';
-import './Lessons.css';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { fetchLessonByIdThunk } from '../auth/authSlice';
+import LoadingSpinner from '../Spinner'; // Ensure this component exists
+import ErrorAlert from './errors/ErrorAlert'; // Ensure this component exists
+import './Lessons.css'; // Ensure the CSS file exists
 
-const LessonPage = () => {
-  const keyPoints = [
-    "Understand the basics of JSX",
-    "Learn how to create React components",
-    "Know how to pass props to components",
-    "Understand state management in React"
-  ];
+const Lesson = () => {
+    const { lessonId } = useParams();
+    const dispatch = useDispatch();
+    const { lesson, lessonLoading: loading, lessonError: error } = useSelector(state => state.auth);
 
-  return (
-    <div className="container">
-      <h1 className="title">React Lesson: Introduction to JSX</h1>
-      <p className="description">
-        JSX is a syntax extension for JavaScript that looks similar to XML or HTML. It is used with React to describe what the UI should look like. In this lesson, we will cover the basics of JSX and how it integrates with React components.
-      </p>
-      <h2 className="subTitle">Key Points:</h2>
-      <ul className="list">
-        {keyPoints.map((point, index) => (
-          <li key={index} className="listItem">{point}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    useEffect(() => {
+        if (lessonId) {
+            dispatch(fetchLessonByIdThunk(lessonId));
+        }
+    }, [dispatch, lessonId]);
+
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorAlert message={error} />;
+    if (!lesson) return <div>No lesson found</div>;
+
+    return (
+        <div id='Body1'>
+            <div className="lesson-container">
+                <h1 className="lesson-title">{lesson.title}</h1>
+                <hr className='underline'></hr>
+                <img className="lesson-image" src={lesson.photo} alt={lesson.title} />
+                <p className="lesson-text">{lesson.information}</p>
+                <form>
+                    <label>
+                        <input type="radio" name="completed" /> Lesson Completed
+                    </label>
+                </form>
+                <div>
+                </div>
+
+                <div className="Cont2">
+                {lesson.test_questions?.map((question, index) => (
+                    <div key={index}>
+                        <p>{question.question}</p>
+                        {question.choices.map((choice, idx) => (
+                            <label key={idx}>
+                                <input type="radio" name={`question${index}`} value={choice} />
+                                {choice}
+                            </label>
+                        ))}
+                    </div>
+                ))}
+                </div>
+
+            </div>
+        </div>
+    );
 };
 
-export default LessonPage;
+export default Lesson;

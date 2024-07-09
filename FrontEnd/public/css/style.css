@@ -255,38 +255,70 @@ a:focus,
   height: 100vh;
   display: block;
 }
+
 .intro {
   display: table;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: url(../img/intro-bg.png) center center no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
-  background-attachment: fixed;
+  background-attachment: fixed; 
   -o-background-size: cover;
 }
+
 .intro .overlay {
   background: rgba(0, 0, 0, 0.2);
   width: 100%;
   height: 100%;
 }
-.text1  {
-  margin: 150px;
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes deleting {
+  from { width: 100%; }
+  to { width: 0; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: white; }
+}
+
+.text1 {
   color: white !important;
   font-size: 35px !important;
-  width: 100%;
+  font-family: 'Monoton', cursive !important;
   position: relative;
-  margin: auto;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 0.15em solid white;
+  width: 22ch; /* Adjust this value based on your text length */
+  margin: 150px auto;
+  animation: typing 4s steps(22, end), blink-caret 0.75s step-end infinite;
 }
+
+.text1.typing {
+  animation: typing 4s steps(22, end) forwards, blink-caret 0.75s step-end infinite;
+}
+
+.text1.deleting {
+  animation: deleting 2s steps(22, end) forwards, blink-caret 0.75s step-end infinite;
+}
+
 .text1 .Lazyl {
   color: red !important;
   font-size: 50px;
+  font-family: 'Monoton', cursive !important;
 }
 
 .intro h1 {
-  font-family: "Raleway", sans-serif;
+  font-family: 'Monoton', cursive !important;
   color: #05161A;
   font-size: 82px;
   font-weight: 700;
@@ -294,10 +326,13 @@ a:focus,
   margin-top: 0;
   margin-bottom: 10px;
 }
+
 .intro h1 span {
   font-weight: 800;
   color: #003f3a;
+  font-family: 'Monoton', cursive !important;
 }
+
 .intro p {
   color: #05161A;
   font-size: 22px;
@@ -306,11 +341,13 @@ a:focus,
   margin: 0 auto;
   margin-bottom: 60px;
 }
+
 header .intro-text {
   padding-top: 350px;
   padding-bottom: 200px;
   text-align: center;
 }
+
 /* Features Section */
 #features {
   background: #072E33;

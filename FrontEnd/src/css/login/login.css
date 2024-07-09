@@ -1,5 +1,3 @@
-/* login.css */
-
 .body1 {
     background: linear-gradient(300deg, #003f30, #0f548c, #004a6cf0, #005d4f);
     background-size: 240% 240%;
@@ -38,19 +36,18 @@
 
 .activate-title, .login-title {
     text-align: center;
-    color: #dedede;
+    color: #FFFFFF;
+    text-shadow: #1a5851 3px 7px 4px;
 }
 
 .activate-form, .login-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
-
 .activate-form input, .login-form input {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    height: 45px;
     background-color: rgba(210, 210, 210, 0.74);
     border: 1px solid #00ff0d;
     border-radius: 5px;
@@ -72,6 +69,18 @@
     border: none;
     cursor: pointer;
     transition: 0.3s;
+}
+
+h3 {
+    color: rgb(200, 200, 200);
+    font-size: 20px;
+    margin: 0;
+}
+hr {
+    width: 100%;
+    height: 0;
+    color: rgba(255, 255, 255, 0);
+    box-shadow: 0 0 5px 5px white;
 }
 
 .activate-button:hover, .login-form button:hover {

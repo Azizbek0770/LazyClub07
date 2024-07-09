@@ -1,0 +1,9 @@
+/* components/ErrorAlert.css */
+.error-alert {
+    color: #ff0000;
+    background-color: #ffe5e5;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+}

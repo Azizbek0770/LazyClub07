@@ -1,33 +1,58 @@
-.container {
-    width: 80vw;
-    height: 100vh;
-    background-color: rgb(234, 181, 100);
-    margin: auto;
-    z-index: 3;
-  }
+/* Lessons.css */
+#Body1 {
+  background-color: #0d3f47;
+  width: 100vw;
+  color: white !important;
+  display: flex;
+}
+
+.lesson-container {
+  background-color: #006a51;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 5px 15px rgba(216, 216, 216, 0.8);
+  max-width: 80vw;
+  margin: 100px auto;
+  color: white;
   
-  .title {
-    font-size: 2em;
-    margin-bottom: 10px;
-  }
-  
-  .description {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-  }
-  
-  .subTitle {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-  }
-  
-  .list {
-    list-style-type: disc;
-    padding-left: 20px;
-  }
-  
-  .listItem {
-    font-size: 1.1em;
-    margin-bottom: 5px;
-  }
-  
+}
+
+.Cont2 {
+  width: 40vw;
+}
+
+.underline {
+  margin-bottom: 20px !important;
+  width: 95%;
+  margin: auto;
+  box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.129);
+  border: none;
+}
+
+.lesson-title {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.lesson-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  box-shadow: inset 0px 2px 4px rgba(204, 204, 204, 0.643);
+  border-radius: 20px;
+}
+
+.lesson-text {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+form label {
+  font-size: 1em;
+}

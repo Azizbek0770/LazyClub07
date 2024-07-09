@@ -1,23 +1,17 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux'; // Import Provider
-import { store } from './redux/store.jsx'; // Import your Redux store
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import App from './App'; // Adjust path as per your project structure
+import store from './redux/store'; // Adjust path as per your project structure
+import { Provider } from 'react-redux';
 
-const container = document.getElementById('root');
-const root = ReactDOM.createRoot(container);
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Router>
-        <App />
-      </Router>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>
 );
-
-serviceWorker.unregister();

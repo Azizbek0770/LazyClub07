@@ -1,148 +1,138 @@
-// RegisterPage.jsx
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { BiUser } from 'react-icons/bi';
-import { useDispatch, useSelector } from 'react-redux';
-import { register, resetState } from './auth/authSlice';
+// src/components/Register.jsx
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Spinner from './Spinner';
+import authService from './auth/authService'; // Ensure correct import
 import '../css/register.css';
+import Spinner from './Spinner.jsx'; // Import your Spinner component
 
-const RegisterPage = () => {
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    username: '',
-    email: '',
-    gender: '',
-    password: '',
-    re_password: '',
-  });
+const Register = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rePassword, setRePassword] = useState('');
+    const [gender, setGender] = useState('Male');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const { first_name, last_name, username, email, gender, password, re_password } = formData;
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+        if (password !== rePassword) {
+            setError('Passwords do not match.');
+            return;
+        }
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+        const userData = {
+            first_name: firstName,
+            last_name: lastName,
+            username,
+            email,
+            password,
+            re_password: rePassword, // Correct field name: re_password
+            gender,
+        };
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+        setIsLoading(true);
+        try {
+            await authService.register(userData);
+            navigate('/checkout');
+        } catch (error) {
+            setError('Registration failed. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (password !== re_password) {
-      toast.error('Passwords do not match');
-    } else {
-      const userData = {
-        first_name,
-        last_name,
-        username,
-        email,
-        gender,
-        password,
-        re_password,
-      };
-      console.log('Registering user with data:', userData); // Log the data to see what is being sent
-      dispatch(register(userData));
-    }
-  };
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-      console.error('Registration error:', message); // Log the error message
-    }
-
-    if (isSuccess || user) {
-      navigate('/checkout');
-      toast.success('An activation email has been sent to your email. Please check your email');
-      dispatch(resetState());
-      setFormData({
-        first_name: '',
-        last_name: '',
-        username: '',
-        email: '',
-        gender: '',
-        password: '',
-        re_password: '',
-      });
-    }
-  }, [isError, isSuccess, user, message, navigate, dispatch]);
-
-  return (
-    <div className='body'>
-      <div className="register-container">
-        {isLoading && <Spinner />}
-        <form className="register-form" onSubmit={handleSubmit}>
-          <h1 className="register-title">
-            Register <BiUser />
-          </h1>
-          <input
-            type="text"
-            placeholder="First Name"
-            name="first_name"
-            onChange={handleChange}
-            value={first_name}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            name="last_name"
-            onChange={handleChange}
-            value={last_name}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Username"
-            name="username"
-            onChange={handleChange}
-            value={username}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            onChange={handleChange}
-            value={email}
-            required
-          />
-          <select name="gender" onChange={handleChange} value={gender} required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={handleChange}
-            value={password}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Retype Password"
-            name="re_password"
-            onChange={handleChange}
-            value={re_password}
-            required
-          />
-          <button className="register-button" type="submit">
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+    return (
+        <div className="body">
+            {isLoading && <Spinner />} {/* Display the spinner when loading */}
+            <div className="register-container">
+                <h2 className="register-title">Register</h2>
+                <form className="register-form" onSubmit={handleSubmit}>
+                    <div className='passf'>
+                        <label>
+                            First Name:
+                            <input
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                                placeholder="Enter your first name"
+                            />
+                        </label>
+                        <label>
+                            Last Name:
+                            <input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                                placeholder="Enter your last name"
+                            />
+                        </label>
+                    </div>
+                    <label>
+                        Username:
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            placeholder="Enter your username"
+                        />
+                    </label>
+                    <label>
+                        Email:
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="Enter your email"
+                        />
+                    </label>
+                    <div className='passf'>
+                        <label>
+                            Password:
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                placeholder="Enter your password"
+                            />
+                        </label>
+                        <label>
+                            Confirm Password:
+                            <input
+                                type="password"
+                                value={rePassword}
+                                onChange={(e) => setRePassword(e.target.value)}
+                                required
+                                placeholder="Confirm your password"
+                            />
+                        </label>
+                    </div>
+                    <label>
+                        Gender:
+                        <select
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            required
+                        >
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </label>
+                    {error && <p className="error">{error}</p>}
+                    <button className="register-form-button" type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+    );
 };
 
-export default RegisterPage;
+export default Register;

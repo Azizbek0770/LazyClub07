@@ -2,6 +2,7 @@
 .custom-dropdown-container {
   position: relative;
   display: inline-block;
+  margin-right: 10px;
 }
 
 .custom-dropdown-btn {

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from './auth/authSlice';  // Update the path as per your project structure
 import Logo from '../css/logo-no-background.png';
-import Dropdown from '../components/dropdown'; // Make sure to import the correct component
+import Dropdown from '../components/dropdown'; // Ensure this component exists and the path is correct
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -68,13 +68,33 @@ const Navigation = () => {
                 Kontakt
               </Link>
             </li>
+            {user ? (
               <li>
-                <button className="btrt1">
-                  <Link to={'/login'} className="auth1">
+                <a
+                  href="#"
+                  className="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <img src={user.profilePicture} alt="__" className="profile-icon" /> {user.name}
+                  <span className="caret"></span>
+                </a>
+                <ul className="dropdown-menu">
+                  <li><Link to="/user-panel">User Panel</Link></li>
+                  <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <button className="btn btn-custom">
+                  <Link to="/login" className="auth1">
                     Kirish
                   </Link>
                 </button>
               </li>
+            )}
           </ul>
         </div>
       </div>

@@ -27,12 +27,13 @@ const CustomDropdown = () => {
   return (
     <div ref={dropdownRef} className="custom-dropdown-container">
       <button className="custom-dropdown-btn" onClick={toggleDropdown}>
-        MORE COURSES
+        MORE
       </button>
       <div className={`custom-dropdown-content ${showDropdown ? "show" : ""}`}>
-        <Link to="/lesson1">FullStack</Link>
+        <Link to="#">Course 1</Link>
         <Link to="#">Course 2</Link>
         <Link to="#">Course 3</Link>
+        <Link to="/lessons">List</Link>
       </div>
     </div>
   );

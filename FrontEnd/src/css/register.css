@@ -35,6 +35,8 @@
 
 .register-form {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
 }
 .register-form p{
     color: #c4c4c4;
@@ -94,4 +96,17 @@
 
 .register-form-message a:hover {
     text-decoration: underline;
+}
+.passf {
+    display: flex;
+    gap: 5px;
+}
+label {
+    color: rgb(49, 49, 49);
+    font-weight: 800;
+}
+input::placeholder {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(156, 230, 255, 0.857);
 }

@@ -1,0 +1,30 @@
+/* Navbar logo styling */
+.logo {
+    max-width: 120px;
+  }
+  
+  /* Navbar links alignment */
+  .navbar-nav {
+    margin-left: auto;
+  }
+  
+  /* Profile icon size */
+  .profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  /* Logout button styling */
+  .logout-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #dc3545;
+  }
+  
+  /* Navbar active link */
+  .nav-item.active .nav-link {
+    color: #007bff;
+  }
+  

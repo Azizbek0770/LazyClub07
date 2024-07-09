@@ -1,27 +1,54 @@
-import React from 'react';
+// src/components/userpanel.jsx
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from './auth/authSlice';
-import '../css/userpanel.css'; // Import the CSS file
+import { getUserInfo, logout } from './auth/authSlice';
+import '../css/userpanel.css';
 
 const UserPanel = () => {
-  const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const { userInfo, isLoading, isError, message } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
+    useEffect(() => {
+        dispatch(getUserInfo());
+    }, [dispatch]);
 
-  // Check if user exists before accessing its properties
-  if (!user) {
-    return null; // Render nothing if user is null
-  }
+    const handleLogout = () => {
+        dispatch(logout());
+    };
 
-  return (
-    <div className="user_panel_container">
-      <h2>Welcome, {user.username}</h2>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  );
+    if (isLoading) {
+        return <p>Loading user data...</p>;
+    }
+
+    if (isError) {
+        return (
+            <div className="user-panel-container">
+                <h2>User Panel</h2>
+                <p>Error: {message}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className='body5'>
+         <div className="user-panel-container">
+            <h2 className='formname'>User Panel</h2>
+            <hr className='hr1'></hr>
+            {userInfo ? (
+                <div className="user-data">
+                    <p>First Name: {userInfo.first_name}</p>
+                    <p>Last Name: {userInfo.last_name}</p>
+                    <p>Email: {userInfo.email}</p>
+                    <p>Username: {userInfo.username}</p>
+                    <p>Gender: {userInfo.gender}</p>
+                    <button onClick={handleLogout} className="logout-button">Logout</button>
+                </div>
+            ) : (
+                <p>No user data available</p>
+            )}
+        </div>
+ </div>
+    );
 };
 
 export default UserPanel;

@@ -5,10 +5,11 @@ from .models import User, Test, Result, Lesson
 class CreateUserSerializer(DjoserUserCreateSerializer):
     gender = serializers.ChoiceField(choices=[('Male', 'Male'), ('Female', 'Female')])
     re_password = serializers.CharField(write_only=True)
+    userphoto = serializers.ImageField(required=False)
 
     class Meta(DjoserUserCreateSerializer.Meta):
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'password', 're_password']
+        fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'password', 're_password', 'userphoto']
 
     def validate(self, data):
         if data.get('password') != data.get('re_password'):
@@ -41,3 +42,8 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'userphoto']

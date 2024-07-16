@@ -2,12 +2,12 @@ from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Lesson
-from .serializers import LessonSerializer
+from .models import Lesson, User
+from .serializers import LessonSerializer, CreateUserSerializer  # adjust serializers import as needed
+from django.http import JsonResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
-from django.contrib.auth.models import User
 
 class TestView(View):
     def get(self, request, *args, **kwargs):
@@ -96,6 +96,13 @@ def custom_password_reset_confirm(request):
     else:
         return Response({'error': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def upload_profile_photo(request):
+    serializer = CreateUserSerializer(request.user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
 def get_titles(request):
     """

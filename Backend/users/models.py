@@ -35,31 +35,31 @@ class Test(models.Model):
         ('Katta sinflar', 'Katta sinflar'),
         ('Kichik sinflar', 'Kichik sinflar'),
     ]
-    subjects=[
+    SUBJECTS = [
         ('Dasturlash', 'Dasturlash'),
         ('Matematika', 'Matematika'),
-        ('Fizika','Fizika')
+        ('Fizika', 'Fizika'),
     ]
-    question_str=models.TextField(blank=True)
-    question_img=models.ImageField(blank=True)
-    question_type1=models.CharField(max_length=100,choices=MY_CHOICES)
-    question_subject=models.CharField(max_length=15,choices=subjects)
-    option1=models.TextField()
-    option2=models.TextField()
-    option3=models.TextField()
-    option4=models.TextField()
+    question_str = models.TextField(blank=True)
+    question_img = models.ImageField(upload_to='questions/', blank=True, null=True)
+    question_type1 = models.CharField(max_length=100, choices=MY_CHOICES)
+    question_subject = models.CharField(max_length=15, choices=SUBJECTS)
+    option1 = models.TextField()
+    option2 = models.TextField()
+    option3 = models.TextField()
+    option4 = models.TextField()
 
     def __str__(self) -> str:
-        return f"{self.question_str} {self.question_img}"
+        return self.question_str
 
 class Result(models.Model):
-    check_student=models.IntegerField()
-    user_id=models.OneToOneField(User,on_delete=models.CASCADE)
-    start_time=models.DateTimeField()
-    end_time=models.DateTimeField(auto_now=True)
+    check_student = models.IntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"{self.check_student}"
+        return str(self.check_student)
 
 class Lesson(models.Model):
     title = models.CharField(max_length=300)
@@ -67,4 +67,4 @@ class Lesson(models.Model):
     information = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.title}"
+        return self.title

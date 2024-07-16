@@ -39,7 +39,8 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
 
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
-        return await authService.login(userData);
+        const response = await authService.login(userData);
+        return response;
     } catch (error) {
         const message = error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
@@ -59,6 +60,18 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkA
         return thunkAPI.rejectWithValue(message);
     }
 });
+
+export const uploadProfilePhoto = createAsyncThunk(
+    'auth/uploadProfilePhoto',
+    async (photoData, thunkAPI) => {
+        try {
+            const response = await authService.uploadProfilePhoto(photoData);
+            return response;
+        } catch (error) {
+            const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    });
 
 export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
     try {
@@ -141,15 +154,11 @@ const authSlice = createSlice({
                 state.isError = true;
                 state.message = action.payload;
             })
-            .addCase(logout.pending, (state) => {
-                state.isLoading = true;
-                state.isError = false;
-                state.message = '';
-            })
             .addCase(logout.fulfilled, (state) => {
-                state.isLoading = false;
                 state.user = null;
                 state.isAuthenticated = false;
+                state.isError = false;
+                state.isSuccess = false;
                 state.message = 'Logout successful';
                 localStorage.removeItem('user');
             })
@@ -162,8 +171,23 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.userInfo = action.payload;
                 state.isError = false;
+                state.isSuccess = true;
+                state.message = 'User info fetched successfully';
             })
             .addCase(getUserInfo.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(uploadProfilePhoto.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(uploadProfilePhoto.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.user = { ...state.user, profile_photo: action.payload.profile_photo };
+            })
+            .addCase(uploadProfilePhoto.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
@@ -171,35 +195,37 @@ const authSlice = createSlice({
             .addCase(resetPassword.pending, (state) => {
                 state.resettingPassword = true;
                 state.resetPasswordError = null;
+                state.isSuccess = false; // Ensure it's reset when starting a new request
             })
-            .addCase(resetPassword.fulfilled, (state) => {
+            .addCase(resetPassword.fulfilled, (state, action) => {
                 state.resettingPassword = false;
+                state.message = 'Password reset email sent';
+                state.isSuccess = true;
             })
             .addCase(resetPassword.rejected, (state, action) => {
                 state.resettingPassword = false;
                 state.resetPasswordError = action.payload;
+                state.isSuccess = false; // Ensure it's reset if there's an error
             })
             .addCase(confirmResetPassword.pending, (state) => {
-                state.isLoading = true;
-                state.isError = false;
-                state.message = '';
+                state.resettingPassword = true;
+                state.resetPasswordError = null;
             })
-            .addCase(confirmResetPassword.fulfilled, (state) => {
-                state.isLoading = false;
-                state.isError = false;
+            .addCase(confirmResetPassword.fulfilled, (state, action) => {
+                state.resettingPassword = false;
                 state.message = 'Password reset confirmed';
             })
             .addCase(confirmResetPassword.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = true;
-                state.message = action.payload;
+                state.resettingPassword = false;
+                state.resetPasswordError = action.payload;
             })
             .addCase(activateAccount.pending, (state) => {
                 state.activatingAccount = true;
                 state.activationError = null;
             })
-            .addCase(activateAccount.fulfilled, (state) => {
+            .addCase(activateAccount.fulfilled, (state, action) => {
                 state.activatingAccount = false;
+                state.message = 'Account activated successfully';
             })
             .addCase(activateAccount.rejected, (state, action) => {
                 state.activatingAccount = false;
@@ -221,5 +247,4 @@ const authSlice = createSlice({
 });
 
 export const { resetState } = authSlice.actions;
-
 export default authSlice.reducer;

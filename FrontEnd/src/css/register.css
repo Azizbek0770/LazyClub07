@@ -11,7 +11,7 @@
 }
 .body {
     width: 100vw;
-    height: 100vh;
+    height: 120vh;
     position: absolute;
     background: linear-gradient(300deg,#003e63,#008997,#14b6ff,#3bffe0);
     background-size: 240% 240%;
@@ -48,7 +48,7 @@
 .register-form input,
 .register-form select{
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding: 10px;
     border: 1px solid #00ff00;
     border-radius: 5px;
@@ -99,7 +99,7 @@
 }
 .passf {
     display: flex;
-    gap: 5px;
+    gap: 3px;
 }
 label {
     color: rgb(49, 49, 49);

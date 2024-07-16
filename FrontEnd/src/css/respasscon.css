@@ -1,6 +1,7 @@
-/* respascon.css */
+/* Combined CSS for Reset Password and Reset Password Confirm */
 
-.body3 {
+/* General Styles */
+.body3, .reset-password-body {
     background: linear-gradient(300deg, #003f30, #0f548c, #004a6cf0, #005d4f);
     background-size: 240% 240%;
     animation: gradient-animation 24s ease infinite;
@@ -23,7 +24,8 @@
     }
 }
 
-.reset-password-confirm-container {
+/* Reset Password Confirm Container */
+.reset-password-confirm-container, .reset-password-container {
     width: 100%;
     max-width: 400px;
     padding: 20px;
@@ -33,12 +35,12 @@
     text-align: center;
 }
 
-.reset-password-confirm-container h2 {
+.reset-password-confirm-container h2, .reset-password-title {
     margin-bottom: 20px;
     color: #333;
 }
 
-.reset-password-confirm-container input {
+.reset-password-confirm-container input, .reset-password-container input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -47,12 +49,12 @@
     border-radius: 5px;
 }
 
-.reset-password-confirm-container input::placeholder {
+.reset-password-confirm-container input::placeholder, .reset-password-container input::placeholder {
     color: #555;
     font-size: 16px;
 }
 
-.reset-password-confirm-container button {
+.reset-password-confirm-container button, .reset-password-container button {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -65,10 +67,11 @@
     transition: 0.3s;
 }
 
-.reset-password-confirm-container button:hover {
+.reset-password-confirm-container button:hover, .reset-password-container button:hover {
     background-color: #0056b3;
 }
 
+/* Messages */
 .success-message {
     color: #28a745;
     font-weight: bold;
@@ -79,4 +82,17 @@
     color: #dc3545;
     font-weight: bold;
     margin-top: 10px;
+}
+
+/* Spinner Overlay */
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

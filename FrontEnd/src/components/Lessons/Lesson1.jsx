@@ -33,23 +33,19 @@ const Lesson = () => {
                         <input type="radio" name="completed" /> Lesson Completed
                     </label>
                 </form>
-                <div>
-                </div>
-
                 <div className="Cont2">
-                {lesson.test_questions?.map((question, index) => (
-                    <div key={index}>
-                        <p>{question.question}</p>
-                        {question.choices.map((choice, idx) => (
-                            <label key={idx}>
-                                <input type="radio" name={`question${index}`} value={choice} />
-                                {choice}
-                            </label>
-                        ))}
-                    </div>
-                ))}
+                    {lesson.test_questions?.map((question, index) => (
+                        <div key={index}>
+                            <p>{question.question}</p>
+                            {question.choices.map((choice, idx) => (
+                                <label key={idx}>
+                                    <input type="radio" name={`question${index}`} value={choice} />
+                                    {choice}
+                                </label>
+                            ))}
+                        </div>
+                    ))}
                 </div>
-
             </div>
         </div>
     );

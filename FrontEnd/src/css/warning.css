@@ -15,3 +15,11 @@
     font-size: 24px;
     margin-bottom: 20px;
 }
+.ter1 {
+    color: #b4b4b4cb;
+    margin: 10px;
+}
+.ter2 {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { confirmResetPassword } from './auth/authSlice';
@@ -9,8 +9,8 @@ const ResetPasswordConfirm = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLoading, isSuccess, isError, message } = useSelector((state) => state.auth);
     const { uid, token } = useParams();
+    const { resettingPassword, resetPasswordError, isSuccess, message } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,10 +21,9 @@ const ResetPasswordConfirm = () => {
         dispatch(confirmResetPassword({ uid, token, new_password: password, re_new_password: confirmPassword }));
     };
 
-    // Handle navigation after successful password reset
-    React.useEffect(() => {
+    useEffect(() => {
         if (isSuccess) {
-            navigate('/login'); // Navigate to the login page
+            navigate('/login');
         }
     }, [isSuccess, navigate]);
 
@@ -32,7 +31,7 @@ const ResetPasswordConfirm = () => {
         <div className='reset-password-confirm-container'>
             <h2>Confirm Reset Password</h2>
             {isSuccess && <p className='success-message'>{message}</p>}
-            {isError && <p className='error-message'>{message}</p>}
+            {resetPasswordError && <p className='error-message'>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <input
                     type='password'
@@ -49,8 +48,8 @@ const ResetPasswordConfirm = () => {
                     required
                 />
                 {password !== confirmPassword && <p className='error-message'>Passwords do not match</p>}
-                <button type='submit' disabled={isLoading || password !== confirmPassword}>
-                    {isLoading ? 'Loading...' : 'Confirm Reset'}
+                <button type='submit' disabled={resettingPassword || password !== confirmPassword}>
+                    {resettingPassword ? 'Loading...' : 'Confirm Reset'}
                 </button>
             </form>
         </div>

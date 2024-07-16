@@ -1,4 +1,3 @@
-# users/manager.py
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -25,7 +24,7 @@ class CustomUserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValueError(_("Base User: an email address is required"))
+            raise ValueError(_("An email address is required"))
 
         user = self.model(
             first_name=first_name,
@@ -62,7 +61,7 @@ class CustomUserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValueError(_("Admin User: an email address is required"))
+            raise ValueError(_("An email address is required"))
 
         user = self.create_user(
             first_name=first_name,

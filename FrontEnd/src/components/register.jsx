@@ -1,9 +1,9 @@
 // src/components/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from './auth/authService'; // Ensure correct import
+import authService from './auth/authService';
 import '../css/register.css';
-import Spinner from './Spinner.jsx'; // Import your Spinner component
+import Spinner from './Spinner.jsx';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -13,6 +13,8 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [gender, setGender] = useState('Male');
+    const [profilePhoto, setProfilePhoto] = useState(null);
+    const [skipPhoto, setSkipPhoto] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -25,30 +27,51 @@ const Register = () => {
             return;
         }
 
-        const userData = {
-            first_name: firstName,
-            last_name: lastName,
-            username,
-            email,
-            password,
-            re_password: rePassword, // Correct field name: re_password
-            gender,
-        };
+        const userData = new FormData();
+        userData.append('first_name', firstName);
+        userData.append('last_name', lastName);
+        userData.append('username', username);
+        userData.append('email', email);
+        userData.append('password', password);
+        userData.append('re_password', rePassword);
+        userData.append('gender', gender);
+
+        if (!skipPhoto && profilePhoto) {
+            userData.append('profile_photo', profilePhoto);
+        }
 
         setIsLoading(true);
         try {
             await authService.register(userData);
             navigate('/checkout');
         } catch (error) {
-            setError('Registration failed. Please try again.');
+            console.error('Registration failed:', error);
+            const errorMessage = error.first_name?.[0] || 
+                                 error.last_name?.[0] || 
+                                 error.email?.[0] || 
+                                 error.password?.[0] || 
+                                 error.re_password?.[0] || 
+                                 'Registration failed. Please try again.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
     };
 
+    const handlePhotoChange = (e) => {
+        setProfilePhoto(e.target.files[0]);
+    };
+
+    const handleSkipPhotoChange = () => {
+        setSkipPhoto(!skipPhoto);
+        if (!skipPhoto) {
+            setProfilePhoto(null);
+        }
+    };
+
     return (
         <div className="body">
-            {isLoading && <Spinner />} {/* Display the spinner when loading */}
+            {isLoading && <Spinner />}
             <div className="register-container">
                 <h2 className="register-title">Register</h2>
                 <form className="register-form" onSubmit={handleSubmit}>
@@ -126,6 +149,23 @@ const Register = () => {
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
+                    </label>
+                    <label>
+                        Profile Photo:
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoChange}
+                            disabled={skipPhoto}
+                        />
+                    </label>
+                    <label>
+                        Skip User Photo:
+                        <input
+                            type="checkbox"
+                            checked={skipPhoto}
+                            onChange={handleSkipPhotoChange}
+                        />
                     </label>
                     {error && <p className="error">{error}</p>}
                     <button className="register-form-button" type="submit">Register</button>

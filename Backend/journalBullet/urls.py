@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from users.views import TestView, custom_password_reset_confirm, get_all_lessons, get_lesson_details
+from users.views import TestView, custom_password_reset_confirm, get_all_lessons, get_lesson_details, upload_profile_photo
 
 from django.http import HttpResponse
 
@@ -19,4 +19,5 @@ urlpatterns = [
     path('test/<str:q_type>/', TestView.as_view(), name='test-qtype-view'),
     path('test/<str:q_type>/<str:q_subject>/', TestView.as_view(), name='test-qtype-subject-view'),
     path('api/password_reset_confirm/', custom_password_reset_confirm, name='custom_password_reset_confirm'),
+    path('api/v1/auth/users/upload_photo/', upload_profile_photo, name='upload_profile_photo'), # Ensure it's POST method
 ]

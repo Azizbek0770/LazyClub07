@@ -14,6 +14,7 @@ import ResetPass from './components/resetpass';
 import ResetPasswordConfirm from './components/resetpasscon';
 import ActivateAccountForm from './components/activation';
 import UserPanel from './components/userpanel';
+import UserProfile from './components/UserProfile';
 import JsonData from "./data/data.json";
 import SmoothScroll from "smooth-scroll";
 import Spinner from './components/Spinner';
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
         <Route path="/auth/activate/:uid/:token" element={<ActivateAccountForm />} />
         <Route path="/user-panel" element={<UserPanel accessToken={accessToken} uid={uid} />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/checkout" element={<Warning />} />
         <Route path="/lesson/:lessonId" element={<Lesson />} />
         <Route path="/lessons" element={<LessonsList />} />

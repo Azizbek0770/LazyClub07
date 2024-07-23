@@ -61,17 +61,15 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkA
     }
 });
 
-export const uploadProfilePhoto = createAsyncThunk(
-    'auth/uploadProfilePhoto',
-    async (photoData, thunkAPI) => {
-        try {
-            const response = await authService.uploadProfilePhoto(photoData);
-            return response;
-        } catch (error) {
-            const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-            return thunkAPI.rejectWithValue(message);
-        }
-    });
+export const uploadProfilePhoto = createAsyncThunk('auth/uploadProfilePhoto', async (photoData, thunkAPI) => {
+    try {
+        const response = await authService.uploadProfilePhoto(photoData);
+        return response;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
 
 export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
     try {

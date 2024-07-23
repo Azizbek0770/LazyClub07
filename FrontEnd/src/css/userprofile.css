@@ -1,0 +1,82 @@
+/* userprofile.css */
+
+.user-profile-container {
+    max-width: 600px;
+    margin: 200px auto;
+    padding: 20px;
+    background-color: #717171;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.upload-form {
+    margin-bottom: 20px;
+}
+
+.upload-form input[type="file"] {
+    display: none;
+}
+
+.upload-form label {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.upload-form label:hover {
+    background-color: #0056b3;
+}
+
+.upload-form button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.upload-form button:hover {
+    background-color: #218838;
+}
+
+.user-profile {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.user-profile h2 {
+    margin-bottom: 20px;
+}
+
+.user-profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-top: 10px;
+    border: 2px solid #007bff; /* Example border style */
+}
+
+.photo-preview {
+    margin-top: 20px;
+}
+
+.preview-image {
+    width: 200px;
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}

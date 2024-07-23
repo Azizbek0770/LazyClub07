@@ -78,7 +78,7 @@ const Navigation = () => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <img src={user.profilePicture} alt="_" className="profile-icon" /> {user.name}
+                  <img src={user.profile_photo} alt="Profile" className="profile-icon" /> {user.name}
                   <span className="caret"></span>
                 </a>
                 <ul className="dropdown-menu">
@@ -87,11 +87,11 @@ const Navigation = () => {
                 </ul>
               </li>
             ) : (
-                  <Link to="/login" className="auth1">
-                  <button className="btn btn-custom">
-                    Kirish
-                    </button>
-                  </Link>
+              <Link to="/login" className="auth1">
+                <button className="btn btn-custom">
+                  Kirish
+                </button>
+              </Link>
             )}
           </ul>
         </div>

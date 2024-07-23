@@ -2,40 +2,41 @@ from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Lesson, User
-from .serializers import LessonSerializer, CreateUserSerializer  # adjust serializers import as needed
 from django.http import JsonResponse
-from django.contrib.auth.tokens import default_token_generator
+from django.core.files.storage import default_storage
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+from django.contrib.auth.tokens import default_token_generator
+from .models import Lesson, User
+from .serializers import LessonSerializer, UserSerializer
 
 class TestView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse({'message': 'Test view response'}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def get_all_lessons(request):
+def list_lessons(request):
     """
-    Get all lessons.
+    Retrieve a list of all lessons.
     """
     lessons = Lesson.objects.all()
     serializer = LessonSerializer(lessons, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def get_lesson_details(request, lesson_id):
+def lesson_detail(request, lesson_id):
     """
-    Get details of a specific lesson by ID.
+    Retrieve details of a specific lesson by its ID.
     """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
         serializer = LessonSerializer(lesson)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Lesson.DoesNotExist:
-        return JsonResponse({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
-def create_lesson(request):
+def create_new_lesson(request):
     """
     Create a new lesson.
     """
@@ -46,39 +47,34 @@ def create_lesson(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
-def update_lesson(request, lesson_id):
+def update_existing_lesson(request, lesson_id):
     """
-    Update an existing lesson by ID.
+    Update an existing lesson by its ID.
     """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
+        serializer = LessonSerializer(lesson, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Lesson.DoesNotExist:
-        return JsonResponse({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = LessonSerializer(lesson, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_lesson(request, lesson_id):
+def delete_lesson_by_id(request, lesson_id):
     """
-    Delete a lesson by ID.
+    Delete a specific lesson by its ID.
     """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
+        lesson.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     except Lesson.DoesNotExist:
-        return JsonResponse({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    lesson.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
-def custom_password_reset_confirm(request):
-    """
-    Custom password reset confirm view.
-    """
+def password_reset_confirm(request):
     uidb64 = request.data.get('uidb64')
     token = request.data.get('token')
     new_password = request.data.get('new_password')
@@ -87,25 +83,32 @@ def custom_password_reset_confirm(request):
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
+        return Response({'error': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if user is not None and default_token_generator.check_token(user, token):
+    if default_token_generator.check_token(user, token):
         user.set_password(new_password)
         user.save()
         return Response({'status': 'Password reset successful'}, status=status.HTTP_200_OK)
-    else:
-        return Response({'error': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
-def upload_profile_photo(request):
-    serializer = CreateUserSerializer(request.user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def upload_user_photo(request):
+    """
+    Upload a profile photo for the authenticated user.
+    """
+    if 'profile_photo' in request.FILES:
+        profile_photo = request.FILES['profile_photo']
+        file_name = default_storage.save(f'profile_photos/{profile_photo.name}', profile_photo)
+        file_url = default_storage.url(file_name)
+        user = request.user
+        user.profile_photo = file_url
+        user.save()
+        return Response({'profile_photo': file_url}, status=status.HTTP_200_OK)
+    return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
-def get_titles(request):
+def fetch_titles(request):
     """
-    Get titles.
+    Fetch a list of titles or relevant data.
     """
-    return Response({'message': 'Get titles'}, status=status.HTTP_200_OK)
+    return Response({'message': 'Fetch titles'}, status=status.HTTP_200_OK)

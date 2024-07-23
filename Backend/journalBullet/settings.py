@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import environ
+import os
 from datetime import timedelta
 
 env = environ.Env(DEBUG=(bool, False))
@@ -65,6 +66,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

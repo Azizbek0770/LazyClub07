@@ -32,6 +32,16 @@
     background-color: #ffffff55;
     box-shadow: 0px 0px 10px 5px #fffcfc55;
     margin-top: 200px;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
 }
 
 .activate-title, .login-title {

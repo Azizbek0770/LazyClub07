@@ -111,6 +111,7 @@ hr {
 }
 .Logo {
   width: 10vw;
+  height: 2.5em !important;
   margin-left: -20px;
   margin-top: -15px;
 }

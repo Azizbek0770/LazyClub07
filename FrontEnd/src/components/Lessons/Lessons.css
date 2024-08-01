@@ -9,11 +9,11 @@
 .lesson-container {
   background-color: #006a51;
   padding: 20px;
-  border-radius: 18px;
-  box-shadow: 0 5px 15px rgba(216, 216, 216, 0.8);
+  border-radius: 8px;
+  box-shadow: 0 0px 1px 5px rgba(255, 255, 255, 0.8);
   max-width: 80vw;
   margin: 100px auto;
-  color: white;
+  color: rgba(255, 255, 255, 0.793);
   
 }
 
@@ -31,9 +31,13 @@
 }
 
 .lesson-title {
-  font-size: 2em;
+  font-size: 3em;
+  font-weight: 800;
+  font-family: 'Cooper Black';
   margin-bottom: 20px;
   text-align: center;
+  color: white !important;
+  text-shadow: 6px 5px 4px rgba(0, 211, 151, 0.585) ;
 }
 
 .lesson-image {

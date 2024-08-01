@@ -93,15 +93,15 @@ hr {
 
 /* Navigate */
 #menu {
-  padding: 15px;
+  padding: 10px;
   transition: all 0.8s;
   width: 97vw;
-  height: 10vh;
+  height: 8vh;
   margin: auto;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   display: block;
-  background-color: #062e2a;
+  background-color: #023d37b9;
   z-index: 4;
 }
 #menu.navbar-default {
@@ -113,7 +113,7 @@ hr {
   width: 10vw;
   height: 2.5em !important;
   margin-left: -20px;
-  margin-top: -15px;
+  margin-top: -17px;
 }
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;

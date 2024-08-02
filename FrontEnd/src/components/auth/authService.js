@@ -83,32 +83,31 @@ const authService = {
         }
     },
 
-
     uploadProfilePhoto: async (photoFile) => {
         const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`;
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error('No token found');
         }
-
+    
         const formData = new FormData();
-        formData.append('userphoto', photoFile);  // Ensure 'photo' matches the field name in the serializer
-
+        formData.append('userphoto', photoFile);
+    
         const config = {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
             },
         };
-
+    
         try {
-            const response = await axios.post(UPLOAD_PHOTO_URL, formData, config);
+            const response = await axios.patch(UPLOAD_PHOTO_URL, formData, config);
             return response.data;
         } catch (error) {
             console.error('Error uploading profile photo:', error);
-            throw new Error('Uploading profile photo failed');
+            handleError(error, 'Uploading profile photo failed');
         }
-    },
+    },    
 
     resetPassword: async (resetData) => {
         const RESET_PASSWORD_URL = `${AUTH_API_URL}/users/reset_password/`;

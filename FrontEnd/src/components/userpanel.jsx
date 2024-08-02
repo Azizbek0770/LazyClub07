@@ -35,7 +35,6 @@ const UserPanel = () => {
             formData.append('profile_photo', photo);
             dispatch(uploadProfilePhoto(formData))
                 .then(() => {
-                    // Close modal and refresh user info
                     setShowModal(false);
                     dispatch(getUserInfo()); // Ensure you refresh user info after upload
                 });

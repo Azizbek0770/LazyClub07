@@ -9,7 +9,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('Email Address'), max_length=254, unique=True)
     username = models.CharField(_('Username'), max_length=100, unique=True, default='default_username')
     gender = models.CharField(_('Gender'), max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')], default='Male')
-    userphoto = models.ImageField(_('User Photo'), upload_to='userphotos/', blank=True, null=True)
+    userphoto = models.ImageField(_('User Photo'), upload_to='userphoto/', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)

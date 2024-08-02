@@ -1,5 +1,6 @@
 from django.views import View
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
@@ -16,18 +17,12 @@ class TestView(View):
 
 @api_view(['GET'])
 def list_lessons(request):
-    """
-    Retrieve a list of all lessons.
-    """
     lessons = Lesson.objects.all()
     serializer = LessonSerializer(lessons, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def lesson_detail(request, lesson_id):
-    """
-    Retrieve details of a specific lesson by its ID.
-    """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
         serializer = LessonSerializer(lesson)
@@ -37,9 +32,6 @@ def lesson_detail(request, lesson_id):
 
 @api_view(['POST'])
 def create_new_lesson(request):
-    """
-    Create a new lesson.
-    """
     serializer = LessonSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -48,9 +40,6 @@ def create_new_lesson(request):
 
 @api_view(['PUT'])
 def update_existing_lesson(request, lesson_id):
-    """
-    Update an existing lesson by its ID.
-    """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
         serializer = LessonSerializer(lesson, data=request.data, partial=True)
@@ -63,9 +52,6 @@ def update_existing_lesson(request, lesson_id):
 
 @api_view(['DELETE'])
 def delete_lesson_by_id(request, lesson_id):
-    """
-    Delete a specific lesson by its ID.
-    """
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
         lesson.delete()
@@ -91,24 +77,16 @@ def password_reset_confirm(request):
         return Response({'status': 'Password reset successful'}, status=status.HTTP_200_OK)
     return Response({'error': 'Invalid token or user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def upload_user_photo(request):
-    """
-    Upload a profile photo for the authenticated user.
-    """
-    if 'profile_photo' in request.FILES:
-        profile_photo = request.FILES['profile_photo']
-        file_name = default_storage.save(f'profile_photos/{profile_photo.name}', profile_photo)
-        file_url = default_storage.url(file_name)
-        user = request.user
-        user.profile_photo = file_url
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def upload_profile_photo(request):
+    user = request.user
+    if 'userphoto' in request.FILES:
+        user.profile_photo = request.FILES['userphoto']
         user.save()
-        return Response({'profile_photo': file_url}, status=status.HTTP_200_OK)
-    return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"status": "photo uploaded"}, status=status.HTTP_200_OK)
+    return Response({"error": "No photo provided"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def fetch_titles(request):
-    """
-    Fetch a list of titles or relevant data.
-    """
     return Response({'message': 'Fetch titles'}, status=status.HTTP_200_OK)

@@ -1,61 +1,55 @@
 .body5 {
+    background-color: #f5f5f5;
     padding: 20px;
-    width: 100%;
-    height: 100vh;
-    background-color: #00483b;
-    font-family: Arial, sans-serif;
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-template-columns: auto auto;
-    grid-gap: 2px;
 }
 
 .user-panel-container {
-    background-color: #fff;
+    background-color: white;
+    border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-top: 100px;
-    border-radius: 8px;
 }
 
 .form-name {
     font-size: 24px;
-    color: #00483b;
+    text-align: center;
     margin-bottom: 10px;
 }
 
 .divider {
-    border: 1px solid #ddd;
     margin-bottom: 20px;
 }
 
 .profile-section {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .logo-container {
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo1 {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    border: 2px solid #00483b;
     object-fit: cover;
 }
 
 .upload-text {
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: underline;
     margin-top: 10px;
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
 }
 
 .text-info {
-    margin-top: 20px;
+    text-align: center;
 }
 
 .user-data p {
@@ -63,33 +57,22 @@
 }
 
 .logout-button {
-    background-color: #d9534f;
-    color: #fff;
-    padding: 10px 20px;
+    background-color: red;
+    color: white;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.logout-button:hover {
-    background-color: #c9302c;
+    margin-top: 10px;
 }
 
 .results-container {
-    background-color: #fff;
+    background-color: white;
+    border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
 }
 
 .results-section {
     text-align: center;
-}
-
-.results-display {
-    font-size: 16px;
-    color: #666;
 }
 
 .upload-modal {
@@ -101,93 +84,39 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
 }
 
 .upload-modal.active {
-    display: block;
-    opacity: 1;
+    display: flex;
 }
 
 .upload-modal-content {
-    background-color: #ffffff;
-    margin: 5% auto;
+    background-color: white;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    animation: fadeIn 0.3s ease-in-out;
-    max-width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    position: relative;
+    width: 400px;
+    text-align: center;
 }
 
 .upload-modal-close {
-    color: #292929;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
-}
-
-.upload-modal-close:hover,
-.upload-modal-close:focus {
-    color: black;
-    text-decoration: none;
+    font-size: 20px;
 }
 
 .photo-preview-container {
     margin-top: 10px;
-    text-align: center;
 }
 
 .photo-preview {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 2px solid #00483b;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-}
-
-.photo-preview:hover {
-    transform: scale(1.05);
-}
-
-.upload-modal input[type="file"] {
-    margin-top: 10px;
-    border: 1px solid #ddd;
-    padding: 8px;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.upload-modal button {
-    background-color: #00483b;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.upload-modal button:hover {
-    background-color: #003d2e;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
 }

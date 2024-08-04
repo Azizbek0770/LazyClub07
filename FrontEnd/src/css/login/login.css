@@ -90,7 +90,7 @@ hr {
     width: 100%;
     height: 0;
     color: rgba(255, 255, 255, 0);
-    box-shadow: 0 0 5px 5px white;
+    box-shadow: 0 0 2px 2px rgb(172, 172, 172);
 }
 
 .activate-button:hover, .login-form button:hover {

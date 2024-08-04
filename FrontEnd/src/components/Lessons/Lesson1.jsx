@@ -34,7 +34,7 @@ const Lesson = () => {
                     </label>
                 </form>
                 <div className="Cont2">
-                    {lesson.test_questions?.map((question, index) => (
+                    {Test.questions?.map((question, index) => (
                         <div key={index}>
                             <p>{question.question}</p>
                             {question.choices.map((choice, idx) => (

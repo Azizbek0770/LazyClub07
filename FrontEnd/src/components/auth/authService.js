@@ -84,7 +84,7 @@ const authService = {
     },
 
     uploadProfilePhoto: async (photoFile) => {
-        const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`;
+        const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`; // Ensure this endpoint is correct
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error('No token found');
@@ -104,8 +104,7 @@ const authService = {
             const response = await axios.patch(UPLOAD_PHOTO_URL, formData, config);
             return response.data;
         } catch (error) {
-            console.error('Error uploading profile photo:', error);
-            handleError(error, 'Uploading profile photo failed');
+            handleError(error, 'Error uploading profile photo');
         }
     },    
 

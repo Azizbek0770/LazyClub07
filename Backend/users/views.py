@@ -10,6 +10,10 @@ from django.utils.encoding import force_str
 from django.contrib.auth.tokens import default_token_generator
 from .models import Lesson, User
 from .serializers import LessonSerializer, UserSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TestView(View):
     def get(self, request, *args, **kwargs):
@@ -31,6 +35,7 @@ def lesson_detail(request, lesson_id):
         return Response({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_new_lesson(request):
     serializer = LessonSerializer(data=request.data)
     if serializer.is_valid():
@@ -39,6 +44,7 @@ def create_new_lesson(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_existing_lesson(request, lesson_id):
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
@@ -51,6 +57,7 @@ def update_existing_lesson(request, lesson_id):
         return Response({'error': 'Lesson not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_lesson_by_id(request, lesson_id):
     try:
         lesson = Lesson.objects.get(pk=lesson_id)
@@ -80,9 +87,11 @@ def password_reset_confirm(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def upload_profile_photo(request):
+    parser_classes = (MultiPartParser, FormParser)
     user = request.user
+
     if 'userphoto' in request.FILES:
-        user.profile_photo = request.FILES['userphoto']
+        user.userphoto = request.FILES['userphoto']
         user.save()
         return Response({"status": "photo uploaded"}, status=status.HTTP_200_OK)
     return Response({"error": "No photo provided"}, status=status.HTTP_400_BAD_REQUEST)

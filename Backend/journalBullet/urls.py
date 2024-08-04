@@ -8,6 +8,9 @@ from users.views import (
     TestView,
     password_reset_confirm,
     list_lessons,
+    create_new_lesson,
+    update_existing_lesson,
+    delete_lesson_by_id,
     upload_profile_photo,
     lesson_detail,
 )
@@ -23,11 +26,13 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.social.urls')),
     path('api/lessons/', list_lessons, name='get_all_lessons'),
     path('api/lessons/<int:lesson_id>/', lesson_detail, name='get_lesson_details'),
+    path('api/lessons/new/', create_new_lesson, name='create_new_lesson'),
+    path('api/lessons/update/<int:lesson_id>/', update_existing_lesson, name='update_existing_lesson'),
+    path('api/lessons/delete/<int:lesson_id>/', delete_lesson_by_id, name='delete_lesson_by_id'),
     path('test/', TestView.as_view(), name='test-view'),
-    path('test/qtype/', TestView.as_view(), name='test-qtype-view'),
-    path('test/qtype/<str:qtype>/', TestView.as_view(), name='test-qtype-qtype'),
     path('api/v1/auth/users/password_reset_confirm/', password_reset_confirm, name='custom_password_reset_confirm'),
-    path('api/v1/auth/users/upload_photo/', upload_profile_photo, name='upload_profile_photo'),]
+    path('api/v1/auth/users/upload_photo/', upload_profile_photo, name='upload_profile_photo'),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

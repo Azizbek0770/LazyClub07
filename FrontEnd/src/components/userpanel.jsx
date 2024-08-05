@@ -78,13 +78,6 @@ const UserPanel = () => {
                     </div>
                 </div>
             </div>
-            <div className="user-panel-container results-container">
-                <h2 className="form-name2">Results:</h2>
-                <hr className="divider" />
-                <div className="results-section">
-                    <p className="results-display">Results and details will be displayed here</p>
-                </div>
-            </div>
 
             {/* Modal for uploading profile photo */}
             <div className={`upload-modal ${showModal ? 'active' : ''}`}>

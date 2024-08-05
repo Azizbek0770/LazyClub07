@@ -13,7 +13,7 @@
     font-family: 'Roboto', sans-serif;
     background-color: var(--background-color);
     margin: 0;
-    padding: 100px;
+    padding: 80px;
     width: 100%;
     height: 100%;
     color: var(--text-color);
@@ -24,13 +24,14 @@
 
 .user-panel-container {
     background-color: var(--secondary-color);
-    margin: 20px;
+    margin: 5px;
     padding: 20px;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     min-width: 350px;
-    width: 100%;
+    width: 60%;
     height: 100%;
+    transition: 0.3s ease-in-out
 }
 
 .form-name {
@@ -123,7 +124,6 @@
 }
 
 .results-container {
-    margin-top: 20px;
     width: 100%;
     height: 100%;
 }
@@ -215,6 +215,7 @@ button[type="submit"]:hover {
     }
     .user-panel-container {
         margin: 5px;
+        width: 100%;
     }
     .body5 {
         padding: 15px;

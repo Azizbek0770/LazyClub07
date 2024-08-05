@@ -13,6 +13,7 @@ from users.views import (
     delete_lesson_by_id,
     upload_profile_photo,
     lesson_detail,
+    UpdateUserInfo,
 )
 
 def index(request):
@@ -32,6 +33,7 @@ urlpatterns = [
     path('test/', TestView.as_view(), name='test-view'),
     path('api/v1/auth/users/password_reset_confirm/', password_reset_confirm, name='custom_password_reset_confirm'),
     path('api/v1/auth/users/upload_photo/', upload_profile_photo, name='upload_profile_photo'),
+    path('api/v1/auth/user/', UpdateUserInfo.as_view(), name='update_user_info'),
 ]
 
 if settings.DEBUG:

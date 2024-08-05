@@ -3,6 +3,8 @@ import axios from 'axios';
 const BACKEND_DOMAIN = 'http://127.0.0.1:8000';
 const AUTH_API_URL = `${BACKEND_DOMAIN}/api/v1/auth`;
 const LESSON_API_URL = `${BACKEND_DOMAIN}/api/lessons`;
+const TEST_API_URL = `${BACKEND_DOMAIN}/test`;
+const RESULT_API_URL = `${BACKEND_DOMAIN}/api/results`;
 
 const handleError = (error, defaultMessage) => {
     if (error.response) {
@@ -83,6 +85,11 @@ const authService = {
         }
     },
 
+    updateUserInfo: async (userData) => {
+        const response = await axios.put(AUTH_API_URL + '/user/', userData);
+        return response.data;
+    },
+
     uploadProfilePhoto: async (photoFile) => {
         const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`; // Ensure this endpoint is correct
         const token = localStorage.getItem('token');
@@ -106,7 +113,7 @@ const authService = {
         } catch (error) {
             handleError(error, 'Error uploading profile photo');
         }
-    },    
+    },
 
     resetPassword: async (resetData) => {
         const RESET_PASSWORD_URL = `${AUTH_API_URL}/users/reset_password/`;
@@ -189,6 +196,43 @@ const authService = {
             return response.data;
         } catch (error) {
             handleError(error, 'Fetching lesson by ID failed');
+        }
+    },
+
+    // Test related methods
+    fetchTests: async () => {
+        try {
+            const response = await axios.get(TEST_API_URL);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'Fetching tests failed');
+        }
+    },
+
+    submitTest: async (answers) => {
+        try {
+            const response = await axios.post(`${TEST_API_URL}/submit`, { answers });
+            return response.data;
+        } catch (error) {
+            handleError(error, 'Submitting test failed');
+        }
+    },
+
+    fetchResults: async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        };
+        try {
+            const response = await axios.get(RESULT_API_URL, config);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'Fetching results failed');
         }
     }
 };

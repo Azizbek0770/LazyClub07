@@ -22,6 +22,8 @@ import Warning from './components/warning';
 import Lesson from './components/Lessons/Lesson1';
 import LessonsList from './components/Lessons/main/lessons_menu';
 import NotFound from './components/Lessons/errors/NotFound404';
+import Results from './components/Results';
+import ChangeInfo from './components/changeuserinfo';
 import "./App.css";
 
 // Initialize SmoothScroll
@@ -66,6 +68,8 @@ const App = () => {
         <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
         <Route path="/auth/activate/:uid/:token" element={<ActivateAccountForm />} />
         <Route path="/user-panel" element={<UserPanel accessToken={accessToken} uid={uid} />} />
+        <Route path="/results" element={<Results />} />
+        <Route path="/changeinfo" element={<ChangeInfo />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/checkout" element={<Warning />} />
         <Route path="/lesson/:lessonId" element={<Lesson />} />

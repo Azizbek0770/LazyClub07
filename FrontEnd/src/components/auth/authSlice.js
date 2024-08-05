@@ -16,6 +16,11 @@ const initialState = {
     lesson: null,
     lessonLoading: false,
     lessonError: null,
+    tests: [],
+    results: [],
+    testLoading: false,
+    testError: false,
+    testMessage: '',
 };
 
 try {
@@ -55,6 +60,17 @@ export const logout = createAsyncThunk('auth/logout', async () => {
 export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkAPI) => {
     try {
         return await authService.getUserInfo();
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
+export const UpdateUserInfo = createAsyncThunk('auth/updateUserInfo', async (userData, thunkAPI) => {
+    try {
+        const response = await authService.updateUserInfo(userData);
+        const updatedUserInfo = await authService.getUserInfo();
+        return updatedUserInfo;
     } catch (error) {
         const message = error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
@@ -103,6 +119,34 @@ export const fetchLessonByIdThunk = createAsyncThunk('auth/fetchLessonById', asy
         return await authService.fetchLessonById(lessonId);
     } catch (error) {
         return thunkAPI.rejectWithValue(error.message || error.toString());
+    }
+});
+
+// Test related thunks
+export const fetchTests = createAsyncThunk('auth/fetchTests', async (_, thunkAPI) => {
+    try {
+        return await authService.fetchTests();
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
+export const submitTest = createAsyncThunk('auth/submitTest', async (answers, thunkAPI) => {
+    try {
+        return await authService.submitTest(answers);
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
+export const fetchResults = createAsyncThunk('auth/fetchResults', async (_, thunkAPI) => {
+    try {
+        return await authService.fetchResults();
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
@@ -177,6 +221,23 @@ const authSlice = createSlice({
                 state.isError = true;
                 state.message = action.payload;
             })
+            .addCase(UpdateUserInfo.pending, (state) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.message = '';
+            })
+            .addCase(UpdateUserInfo.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.userInfo = action.payload; // Update userInfo with the new data
+                state.isError = false;
+                state.isSuccess = true;
+                state.message = 'User information updated successfully';
+            })
+            .addCase(UpdateUserInfo.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
             .addCase(uploadProfilePhoto.pending, (state) => {
                 state.isLoading = true;
             })
@@ -240,6 +301,49 @@ const authSlice = createSlice({
             .addCase(fetchLessonByIdThunk.rejected, (state, action) => {
                 state.lessonLoading = false;
                 state.lessonError = action.payload;
+            })
+            // Test related reducers
+            .addCase(fetchTests.pending, (state) => {
+                state.testLoading = true;
+                state.testError = false;
+            })
+            .addCase(fetchTests.fulfilled, (state, action) => {
+                state.testLoading = false;
+                state.tests = action.payload;
+                state.testError = false;
+            })
+            .addCase(fetchTests.rejected, (state, action) => {
+                state.testLoading = false;
+                state.testError = true;
+                state.testMessage = action.payload;
+            })
+            .addCase(submitTest.pending, (state) => {
+                state.testLoading = true;
+                state.testError = false;
+            })
+            .addCase(submitTest.fulfilled, (state, action) => {
+                state.testLoading = false;
+                state.tests = [...state.tests, action.payload];
+                state.testError = false;
+            })
+            .addCase(submitTest.rejected, (state, action) => {
+                state.testLoading = false;
+                state.testError = true;
+                state.testMessage = action.payload;
+            })
+            .addCase(fetchResults.pending, (state) => {
+                state.testLoading = true;
+                state.testError = false;
+            })
+            .addCase(fetchResults.fulfilled, (state, action) => {
+                state.testLoading = false;
+                state.results = action.payload;
+                state.testError = false;
+            })
+            .addCase(fetchResults.rejected, (state, action) => {
+                state.testLoading = false;
+                state.testError = true;
+                state.testMessage = action.payload;
             });
     },
 });

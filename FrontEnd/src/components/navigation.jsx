@@ -7,7 +7,7 @@ import Dropdown from '../components/dropdown'; // Ensure this component exists a
 
 const Navigation = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -68,8 +68,8 @@ const Navigation = () => {
                 Kontakt
               </Link>
             </li>
-            {user ? (
-              <li>
+            {userInfo ? (
+              <li className="dropdown1">
                 <a
                   href="#"
                   className="dropdown-toggle"
@@ -78,20 +78,22 @@ const Navigation = () => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <img src={user.userphoto} alt="Profile" className="profile-icon" /> {user.name}
-                  <span className="caret"></span>
+                  <img src={userInfo.userphoto} alt="Profile" className="profile-icon" /> {userInfo.name}
                 </a>
                 <ul className="dropdown-menu">
                   <li><Link to="/user-panel">User Panel</Link></li>
+                  <li><Link to="/results">Your results</Link></li>
                   <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
                 </ul>
               </li>
             ) : (
-              <Link to="/login" className="auth1">
-                <button className="btn btn-custom">
-                  Kirish
-                </button>
-              </Link>
+              <li className="btn34">
+                <Link to="/login" className="auth1">
+                  <button className="btn btn-custom">
+                    Kirish
+                  </button>
+                </Link>
+              </li>
             )}
           </ul>
         </div>

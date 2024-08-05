@@ -1,6 +1,9 @@
 from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerializer
 from rest_framework import serializers
 from .models import User, Test, Result, Lesson
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CreateUserSerializer(DjoserUserCreateSerializer):
     gender = serializers.ChoiceField(choices=[('Male', 'Male'), ('Female', 'Female')])

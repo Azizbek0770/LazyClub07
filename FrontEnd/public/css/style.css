@@ -115,6 +115,27 @@ hr {
   margin-left: -20px;
   margin-top: -17px;
 }
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0px 0px 3px 2px white;
+  margin-top: -7px;
+}
+.dropdown1 {
+  margin-left: 100%;
+  position: relative;
+  top: -45px;
+}
+.dropdown-menu {
+  transition: 0.3s ease-out !important;
+  width: 120px;
+  height: 140px;
+  border: none;
+  border-radius: 10px;
+}
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
@@ -140,9 +161,7 @@ hr {
   bottom: -1px;
   width: 0;
   height: 2px;
-  background: linear-gradient(to right, #294D61 0%, #6DA5C0 100%);
   content: "";
-  transition: width 0.2s;
 }
 #menu.navbar-default .navbar-nav > li > a:hover:after {
   width: 100%;
@@ -205,14 +224,21 @@ hr {
   color: #ffffff;
   background-color: #00454b;
   background-image: linear-gradient(to right, #004669 0%, #00312b 100%);
-  padding: 14px 34px;
+  padding: 10px 30px;
   letter-spacing: 1px;
-  margin: 0;
+  margin: 10px;
   font-size: 15px;
   font-weight: 500;
   border-radius: 25px;
-  transition: all 0.5s linear;
+  transition: all 0.3s linear;
   border: 0;
+  max-height: 40px;
+}
+.btn34 {
+  padding-top: 20px;
+  height: 40px !important;
+  margin-top: -40px;
+  text-decoration: none !important;
 }
 .btn-custom:hover,
 .btn-custom:focus,

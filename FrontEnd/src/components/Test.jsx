@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTests, submitTest } from './auth/authSlice.js';
+import { fetchTests, submitTest } from '../features/slices/authSlice';
+import '../css/Test.css'; // Import the CSS file
 
 const Test = () => {
     const dispatch = useDispatch();
-    const { tests, isLoading, isError, message } = useSelector((state) => state.test);
+    const { tests = [], testLoading, testError, testMessage } = useSelector((state) => state.auth);
     const [answers, setAnswers] = useState({});
 
     useEffect(() => {
         dispatch(fetchTests());
     }, [dispatch]);
+
+    useEffect(() => {
+        console.log('Tests state:', tests); // Log the tests state
+    }, [tests]);
 
     const handleChange = (e, questionId) => {
         setAnswers({
@@ -24,31 +29,36 @@ const Test = () => {
     };
 
     return (
-        <div>
-            <h1>Take a Test</h1>
-            {isLoading && <p>Loading...</p>}
-            {isError && <p>Error: {message}</p>}
-            <form onSubmit={handleSubmit}>
-                {tests.map((test) => (
-                    <div key={test.id}>
-                        <p>{test.question_str}</p>
-                        {test.question_img && <img src={test.question_img} alt="Question" />}
-                        {['option1', 'option2', 'option3', 'option4'].map((option) => (
-                            <div key={option}>
-                                <input
-                                    type="radio"
-                                    name={`question-${test.id}`}
-                                    value={option}
-                                    onChange={(e) => handleChange(e, test.id)}
-                                />
-                                <label>{test[option]}</label>
+        <div className='body8'>
+            <div className="test-container">
+                <h1>Take a Test</h1>
+                {testLoading && <p>Loading...</p>}
+                {testError && <p className="error">Error: {testError}</p>}
+                {testMessage && <p className="success">{testMessage}</p>}
+                <form onSubmit={handleSubmit}>
+                    {Array.isArray(tests) && tests.length > 0 ? (
+                        tests.map((test) => (
+                            <div key={test.id} className="test-question">
+                                <h3>{test.question}</h3>
+                                {test.options.map((option) => (
+                                    <label key={option.id}>
+                                        <input
+                                            type="radio"
+                                            name={test.id}
+                                            value={option.id}
+                                            onChange={(e) => handleChange(e, test.id)}
+                                        />
+                                        {option.text}
+                                    </label>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                ))}
-                <button type="submit">Submit</button>
-            </form>
-            {message && <p>{message}</p>}
+                        ))
+                    ) : (
+                        <p>No tests available</p>
+                    )}
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     );
 };

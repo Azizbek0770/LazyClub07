@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetPassword } from './auth/authSlice';
+import { resetPassword } from '../features/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import Spinner from './Spinner';
 import '../css/reset-password.css';

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchResults } from './auth/authSlice';
+import { fetchResults } from '../features/slices/authSlice';
 import '../css/userpanel.css'
 
 const Results = () => {

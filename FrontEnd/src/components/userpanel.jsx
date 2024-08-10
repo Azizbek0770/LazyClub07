@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserInfo, logout, uploadProfilePhoto } from './auth/authSlice';
+import { getUserInfo, logout } from '../features/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import '../css/userpanel.css';
 import UserLogo from '../css/pngwing.com.png';
+import ChangeInfo from './changeuserinfo';
 
 const UserPanel = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { userInfo, isLoading, isError, message } = useSelector((state) => state.auth);
     const [showModal, setShowModal] = useState(false);
-    const [photo, setPhoto] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState(null);
 
     useEffect(() => {
         dispatch(getUserInfo());
@@ -21,29 +20,6 @@ const UserPanel = () => {
         dispatch(logout()).then(() => {
             navigate('/login');
         });
-    };
-
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        setPhoto(file);
-        if (file) {
-            const previewUrl = URL.createObjectURL(file);
-            setPhotoPreview(previewUrl);
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (photo) {
-            const formData = new FormData();
-            formData.append('profile_photo', photo);
-            dispatch(uploadProfilePhoto(formData)).then(() => {
-                setShowModal(false);
-                dispatch(getUserInfo()); // Ensure you refresh user info after upload
-            });
-            setPhoto(null); // Clear the photo after upload
-            setPhotoPreview(null); // Clear the preview
-        }
     };
 
     if (!userInfo) {
@@ -63,7 +39,7 @@ const UserPanel = () => {
                             alt="User Logo"
                         />
                         <div className="upload-text" onClick={() => setShowModal(true)}>
-                            {userInfo.userphoto ? 'Change User Photo' : 'Set User Photo'}
+                            Change User Info
                         </div>
                     </div>
                     <div className="text-info">
@@ -79,25 +55,13 @@ const UserPanel = () => {
                 </div>
             </div>
 
-            {/* Modal for uploading profile photo */}
+            {/* Modal for changing user info */}
             <div className={`upload-modal ${showModal ? 'active' : ''}`}>
                 <div className="upload-modal-content">
                     <span className="upload-modal-close" onClick={() => setShowModal(false)}>&times;</span>
-                    <h2 className="form-name2">Upload Profile Photo</h2>
-                    <form onSubmit={handleSubmit}>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handlePhotoChange}
-                        />
-                        {photoPreview && (
-                            <div className="photo-preview-container">
-                                <img src={photoPreview} alt="Photo Preview" className="photo-preview" />
-                            </div>
-                        )}
-                        <button type="submit">Upload</button>
-                    </form>
-                    {isLoading && <p>Uploading...</p>}
+                    <h2 className="form-name2">Change User Info</h2>
+                    <ChangeInfo /> {/* Render ChangeInfo component here */}
+                    {isLoading && <p>Updating...</p>}
                     {isError && <p>{message}</p>}
                 </div>
             </div>

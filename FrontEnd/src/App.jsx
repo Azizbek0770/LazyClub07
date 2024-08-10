@@ -14,7 +14,6 @@ import ResetPass from './components/resetpass';
 import ResetPasswordConfirm from './components/resetpasscon';
 import ActivateAccountForm from './components/activation';
 import UserPanel from './components/userpanel';
-import UserProfile from './components/UserProfile';
 import JsonData from "./data/data.json";
 import SmoothScroll from "smooth-scroll";
 import Spinner from './components/Spinner';
@@ -24,6 +23,10 @@ import LessonsList from './components/Lessons/main/lessons_menu';
 import NotFound from './components/Lessons/errors/NotFound404';
 import Results from './components/Results';
 import ChangeInfo from './components/changeuserinfo';
+import { NotificationContainer, useNotifications } from './components/Notification';
+import SomeComponent from "./components/somecomponent";
+import Tests from './components/Test'; // Import Tests component
+import Result from "./components/Results";
 import "./App.css";
 
 // Initialize SmoothScroll
@@ -44,6 +47,8 @@ const App = () => {
     }, 2000); // Simulating a 2-second delay
   }, []);
 
+  const { notifications, addNotification, removeNotification } = useNotifications();
+
   if (loading) {
     return <Spinner />; // Show spinner while loading data
   }
@@ -53,6 +58,7 @@ const App = () => {
 
   return (
     <div>
+      <NotificationContainer notifications={notifications} removeNotification={removeNotification} />
       <Navigation />
       <Routes>
         <Route path="/" element={<Header data={landingPageData.Header} />} />
@@ -70,10 +76,12 @@ const App = () => {
         <Route path="/user-panel" element={<UserPanel accessToken={accessToken} uid={uid} />} />
         <Route path="/results" element={<Results />} />
         <Route path="/changeinfo" element={<ChangeInfo />} />
-        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/checkout" element={<Warning />} />
         <Route path="/lesson/:lessonId" element={<Lesson />} />
         <Route path="/lessons" element={<LessonsList />} />
+        <Route path="/some-component" element={<SomeComponent />} />
+        <Route path="/tests" element={<Tests />} /> {/* Add route for Tests component */}
+        <Route path="/results/:testId" element={<Result />} /> {/* Add route for Results component */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

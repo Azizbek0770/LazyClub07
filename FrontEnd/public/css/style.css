@@ -58,8 +58,8 @@ ol {
 ul,
 ol {
   padding: 0;
-  webkit-padding: 0;
-  moz-padding: 0;
+  -webkit-padding: 0;
+  -moz-padding: 0;
 }
 hr {
   height: 2px;
@@ -93,7 +93,7 @@ hr {
 
 /* Navigate */
 #menu {
-  padding: 10px;
+  padding: 15px;
   transition: all 0.8s;
   width: 97vw;
   height: 8vh;
@@ -226,7 +226,7 @@ hr {
   background-image: linear-gradient(to right, #004669 0%, #00312b 100%);
   padding: 10px 30px;
   letter-spacing: 1px;
-  margin: 10px;
+  margin: 15%;
   font-size: 15px;
   font-weight: 500;
   border-radius: 25px;

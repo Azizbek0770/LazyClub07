@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from './auth/authSlice';  // Update the path as per your project structure
+import { logout } from '../features/slices/authSlice';  // Update the path as per your project structure
 import Logo from '../css/logo-no-background.png';
 import Dropdown from '../components/dropdown'; // Ensure this component exists and the path is correct
 

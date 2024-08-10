@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchLessonByIdThunk } from '../auth/authSlice';
+import { fetchLessonById } from '../../features/slices/authSlice';
 import LoadingSpinner from '../Spinner'; // Ensure this component exists
 import ErrorAlert from './errors/ErrorAlert'; // Ensure this component exists
 import './Lessons.css'; // Ensure the CSS file exists
@@ -13,7 +13,7 @@ const Lesson = () => {
 
     useEffect(() => {
         if (lessonId) {
-            dispatch(fetchLessonByIdThunk(lessonId));
+            dispatch(fetchLessonById(lessonId));
         }
     }, [dispatch, lessonId]);
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { activateAccount } from './auth/authSlice';
+import { activateAccount } from '../features/slices/authSlice.js';
 import Spinner from './Spinner'; // Ensure you have this Spinner component
 import '../css/activate.css';
 

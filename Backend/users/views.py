@@ -36,9 +36,9 @@ class UpdateUserInfo(APIView):
 
 logger = logging.getLogger(__name__)
 
-class TestView(View):
+class TestView(APIView):
     def get(self, request, *args, **kwargs):
-        return JsonResponse({'message': 'Test view response'}, status=status.HTTP_200_OK)
+        return Response({"tests": "Hola! Hola! MerCiyefl!"}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def list_lessons(request):

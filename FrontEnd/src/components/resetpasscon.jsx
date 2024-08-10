@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { confirmResetPassword } from './auth/authSlice';
+import { confirmResetPassword } from '../features/slices/authSlice';
 import '../css/respasscon.css';
 
 const ResetPasswordConfirm = () => {

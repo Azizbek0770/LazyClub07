@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserInfo, UpdateUserInfo } from './auth/authSlice';
+import { getUserInfo, updateUserInfo } from '../features/slices/authSlice'; // Adjust path if necessary
 import { useNavigate } from 'react-router-dom';
-import '../css/userpanel.css';
+import { useNotificationContext } from '../contexts/notificationcontext'; // Adjust path if necessary
+import '../css/changeuserinfo.css'; // Adjust path if necessary
 
 const ChangeInfo = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { addNotification } = useNotificationContext(); // Use notification context here
     const { userInfo, isLoading, isError, message } = useSelector((state) => state.auth);
-    
-    const [first_name, setFirstName] = useState('');
-    const [last_name, setLastName] = useState('');
+
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [gender, setGender] = useState('');
@@ -38,8 +40,11 @@ const ChangeInfo = () => {
             username,
             gender
         };
-        dispatch(UpdateUserInfo(updatedInfo)).then(() => {
+        dispatch(updateUserInfo(updatedInfo)).then(() => {
+            addNotification('User info updated successfully!', 'success');
             navigate('/user-panel'); // Redirect to user panel after updating info
+        }).catch(() => {
+            addNotification('Error updating user info', 'error');
         });
     };
 
@@ -48,56 +53,52 @@ const ChangeInfo = () => {
     }
 
     return (
-        <div className="body5">
-            <div className="user-panel-container">
-                <h2 className="form-name">Change User Info</h2>
-                <hr className="divider" />
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>First Name:</label>
-                        <input 
-                            type="text" 
-                            value={first_name} 
-                            onChange={(e) => setFirstName(e.target.value)} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Last Name:</label>
-                        <input 
-                            type="text" 
-                            value={last_name} 
-                            onChange={(e) => setLastName(e.target.value)} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Email:</label>
-                        <input 
-                            type="email" 
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Username:</label>
-                        <input 
-                            type="text" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Gender:</label>
-                        <input 
-                            type="text" 
-                            value={gender} 
-                            onChange={(e) => setGender(e.target.value)} 
-                        />
-                    </div>
-                    <button type="submit" disabled={isLoading}>Update Info</button>
-                </form>
-                {isLoading && <p>Updating...</p>}
-                {isError && <p>{message}</p>}
-            </div>
+        <div className="change-info-container">
+            <h2 className="change-info-header">Change User Info</h2>
+            <hr className="change-info-divider" />
+            <form onSubmit={handleSubmit}>
+                <div className="change-info-form-group">
+                    <label>First Name:</label>
+                    <input 
+                        type="text" 
+                        value={firstName} 
+                        onChange={(e) => setFirstName(e.target.value)} 
+                    />
+                </div>
+                <div className="change-info-form-group">
+                    <label>Last Name:</label>
+                    <input 
+                        type="text" 
+                        value={lastName} 
+                        onChange={(e) => setLastName(e.target.value)} 
+                    />
+                </div>
+                <div className="change-info-form-group">
+                    <label>Email:</label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                    />
+                </div>
+                <div className="change-info-form-group">
+                    <label>Username:</label>
+                    <input 
+                        type="text" 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)} 
+                    />
+                </div>
+                <div className="change-info-form-group">
+                    <label>Gender:</label>
+                    <input 
+                        type="text" 
+                        value={gender} 
+                        onChange={(e) => setGender(e.target.value)} 
+                    />
+                </div>
+                <button type="submit" className="change-info-btn change-info-btn-primary">Update Info</button>
+            </form>
         </div>
     );
 };

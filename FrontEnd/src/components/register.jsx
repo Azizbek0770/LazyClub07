@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from './auth/authService';
+import authService from '../features/slices/authSlice';
 import '../css/register.css';
 import Spinner from './Spinner.jsx';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -12,7 +14,6 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [gender, setGender] = useState('Male');
-    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const Register = () => {
         e.preventDefault();
 
         if (password !== rePassword) {
-            setError('Passwords do not match.');
+            toast.error('Passwords do not match.');
             return;
         }
 
@@ -37,6 +38,7 @@ const Register = () => {
         setIsLoading(true);
         try {
             await authService.register(userData);
+            toast.success('Registration successful!');
             navigate('/checkout');
         } catch (error) {
             console.error('Registration failed:', error);
@@ -46,7 +48,7 @@ const Register = () => {
                                  error.password?.[0] || 
                                  error.re_password?.[0] || 
                                  'Registration failed. Please try again.';
-            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -133,10 +135,10 @@ const Register = () => {
                             <option value="Female">Female</option>
                         </select>
                     </label>
-                    {error && <p className="error">{error}</p>}
                     <button className="register-form-button" type="submit">Register</button>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 };

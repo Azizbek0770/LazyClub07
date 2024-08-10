@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authService from './authService';
+import authService from '../services/authService';
+import { useNotifications } from '../../components/Notification'; // Adjust path accordingly
+
+const handleNotification = (type, message) => {
+    useNotifications(message, type);
+};
 
 const initialState = {
     user: null,
@@ -14,24 +19,12 @@ const initialState = {
     activatingAccount: false,
     activationError: null,
     lesson: null,
-    lessonLoading: false,
     lessonError: null,
     tests: [],
+    testError: null,
     results: [],
-    testLoading: false,
-    testError: false,
-    testMessage: '',
+    resultsError: null,
 };
-
-try {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-        initialState.user = JSON.parse(storedUser);
-        initialState.isAuthenticated = true;
-    }
-} catch (error) {
-    console.error('Failed to parse user from localStorage', error);
-}
 
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
     try {
@@ -44,17 +37,11 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
 
 export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
     try {
-        const response = await authService.login(userData);
-        return response;
+        return await authService.login(userData);
     } catch (error) {
         const message = error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
     }
-});
-
-export const logout = createAsyncThunk('auth/logout', async () => {
-    await authService.logout();
-    return null;
 });
 
 export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkAPI) => {
@@ -66,63 +53,79 @@ export const getUserInfo = createAsyncThunk('auth/getUserInfo', async (_, thunkA
     }
 });
 
-export const UpdateUserInfo = createAsyncThunk('auth/updateUserInfo', async (userData, thunkAPI) => {
+export const updateUserInfo = createAsyncThunk('auth/updateUserInfo', async (userData, thunkAPI) => {
     try {
         const response = await authService.updateUserInfo(userData);
-        const updatedUserInfo = await authService.getUserInfo();
-        return updatedUserInfo;
+        handleNotification('success', 'User info updated successfully');
+        return response;
     } catch (error) {
-        const message = error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        handleNotification('error', 'Updating user info failed');
+        return thunkAPI.rejectWithValue(error.message || error.toString());
     }
 });
 
-export const uploadProfilePhoto = createAsyncThunk('auth/uploadProfilePhoto', async (photoData, thunkAPI) => {
+export const uploadProfilePhoto = createAsyncThunk('auth/uploadProfilePhoto', async (photoFile, thunkAPI) => {
     try {
-        const response = await authService.uploadProfilePhoto(photoData);
+        const response = await authService.uploadProfilePhoto(photoFile);
+        handleNotification('success', 'Profile photo uploaded successfully');
         return response;
     } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        handleNotification('error', 'Error uploading profile photo');
+        return thunkAPI.rejectWithValue(error.message || error.toString());
     }
 });
 
 export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
     try {
-        return await authService.resetPassword(resetData);
+        const response = await authService.resetPassword(resetData);
+        handleNotification('success', 'Password reset email sent successfully');
+        return response;
     } catch (error) {
-        const message = error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        handleNotification('error', 'Password reset failed');
+        return thunkAPI.rejectWithValue(error.message || error.toString());
     }
 });
 
 export const confirmResetPassword = createAsyncThunk('auth/confirmResetPassword', async (confirmData, thunkAPI) => {
     try {
-        return await authService.confirmResetPassword(confirmData);
+        const response = await authService.confirmResetPassword(confirmData);
+        handleNotification('success', 'Password reset successfully');
+        return response;
     } catch (error) {
-        const message = error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
-    }
-});
-
-export const activateAccount = createAsyncThunk('auth/activateAccount', async (activationData, thunkAPI) => {
-    try {
-        return await authService.activateAccount(activationData);
-    } catch (error) {
-        const message = error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
-    }
-});
-
-export const fetchLessonByIdThunk = createAsyncThunk('auth/fetchLessonById', async (lessonId, thunkAPI) => {
-    try {
-        return await authService.fetchLessonById(lessonId);
-    } catch (error) {
+        handleNotification('error', 'Password reset confirmation failed');
         return thunkAPI.rejectWithValue(error.message || error.toString());
     }
 });
 
-// Test related thunks
+export const activateAccount = createAsyncThunk('auth/activateAccount', async ({ uid, token }, thunkAPI) => {
+    try {
+        const response = await authService.activateAccount({ uid, token });
+        handleNotification('success', 'Account activated successfully');
+        return response;
+    } catch (error) {
+        handleNotification('error', 'Account activation failed');
+        return thunkAPI.rejectWithValue(error.message || error.toString());
+    }
+});
+
+export const fetchLessons = createAsyncThunk('auth/fetchLessons', async (_, thunkAPI) => {
+    try {
+        return await authService.fetchLessons();
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
+export const fetchLessonById = createAsyncThunk('auth/fetchLessonById', async (id, thunkAPI) => {
+    try {
+        return await authService.fetchLessonById(id);
+    } catch (error) {
+        const message = error.message || error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
 export const fetchTests = createAsyncThunk('auth/fetchTests', async (_, thunkAPI) => {
     try {
         return await authService.fetchTests();
@@ -134,10 +137,12 @@ export const fetchTests = createAsyncThunk('auth/fetchTests', async (_, thunkAPI
 
 export const submitTest = createAsyncThunk('auth/submitTest', async (answers, thunkAPI) => {
     try {
-        return await authService.submitTest(answers);
+        const response = await authService.submitTest(answers);
+        handleNotification('success', 'Test submitted successfully');
+        return response;
     } catch (error) {
-        const message = error.message || error.toString();
-        return thunkAPI.rejectWithValue(message);
+        handleNotification('error', 'Test submission failed');
+        return thunkAPI.rejectWithValue(error.message || error.toString());
     }
 });
 
@@ -154,7 +159,10 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        resetState: (state) => initialState,
+        logout: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -171,69 +179,56 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.message = 'Registration successful';
                 localStorage.setItem('user', JSON.stringify(action.payload));
+                
+                handleNotification('success', 'Registration successful');
             })
             .addCase(register.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
+
+                handleNotification('error', action.payload);
             })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
-                state.isError = false;
-                state.message = '';
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.user = action.payload;
-                state.isError = false;
                 state.isSuccess = true;
+                state.user = action.payload;
                 state.isAuthenticated = true;
-                state.message = 'Login successful';
-                localStorage.setItem('user', JSON.stringify(action.payload));
+
+                handleNotification('success', 'Login successful');
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
-            })
-            .addCase(logout.fulfilled, (state) => {
-                state.user = null;
-                state.isAuthenticated = false;
-                state.isError = false;
-                state.isSuccess = false;
-                state.message = 'Logout successful';
-                localStorage.removeItem('user');
+
+                handleNotification('error', action.payload);
             })
             .addCase(getUserInfo.pending, (state) => {
                 state.isLoading = true;
-                state.isError = false;
-                state.message = '';
             })
             .addCase(getUserInfo.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.userInfo = action.payload;
-                state.isError = false;
                 state.isSuccess = true;
-                state.message = 'User info fetched successfully';
+                state.userInfo = action.payload;
             })
             .addCase(getUserInfo.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
             })
-            .addCase(UpdateUserInfo.pending, (state) => {
+            .addCase(updateUserInfo.pending, (state) => {
                 state.isLoading = true;
-                state.isError = false;
-                state.message = '';
             })
-            .addCase(UpdateUserInfo.fulfilled, (state, action) => {
+            .addCase(updateUserInfo.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.userInfo = action.payload; // Update userInfo with the new data
-                state.isError = false;
                 state.isSuccess = true;
-                state.message = 'User information updated successfully';
+                state.userInfo = action.payload;
             })
-            .addCase(UpdateUserInfo.rejected, (state, action) => {
+            .addCase(updateUserInfo.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
@@ -244,7 +239,7 @@ const authSlice = createSlice({
             .addCase(uploadProfilePhoto.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.user = { ...state.user, profile_photo: action.payload.profile_photo };
+                state.userInfo = action.payload;
             })
             .addCase(uploadProfilePhoto.rejected, (state, action) => {
                 state.isLoading = false;
@@ -253,100 +248,104 @@ const authSlice = createSlice({
             })
             .addCase(resetPassword.pending, (state) => {
                 state.resettingPassword = true;
-                state.resetPasswordError = null;
-                state.isSuccess = false; // Ensure it's reset when starting a new request
             })
             .addCase(resetPassword.fulfilled, (state, action) => {
                 state.resettingPassword = false;
-                state.message = 'Password reset email sent';
                 state.isSuccess = true;
             })
             .addCase(resetPassword.rejected, (state, action) => {
                 state.resettingPassword = false;
                 state.resetPasswordError = action.payload;
-                state.isSuccess = false; // Ensure it's reset if there's an error
             })
             .addCase(confirmResetPassword.pending, (state) => {
-                state.resettingPassword = true;
-                state.resetPasswordError = null;
+                state.isLoading = true;
             })
             .addCase(confirmResetPassword.fulfilled, (state, action) => {
-                state.resettingPassword = false;
-                state.message = 'Password reset confirmed';
+                state.isLoading = false;
+                state.isSuccess = true;
             })
             .addCase(confirmResetPassword.rejected, (state, action) => {
-                state.resettingPassword = false;
-                state.resetPasswordError = action.payload;
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
             })
             .addCase(activateAccount.pending, (state) => {
                 state.activatingAccount = true;
-                state.activationError = null;
             })
             .addCase(activateAccount.fulfilled, (state, action) => {
                 state.activatingAccount = false;
-                state.message = 'Account activated successfully';
+                state.isSuccess = true;
             })
             .addCase(activateAccount.rejected, (state, action) => {
                 state.activatingAccount = false;
                 state.activationError = action.payload;
             })
-            .addCase(fetchLessonByIdThunk.pending, (state) => {
-                state.lessonLoading = true;
-                state.lessonError = null;
+            .addCase(fetchLessons.pending, (state) => {
+                state.isLoading = true;
             })
-            .addCase(fetchLessonByIdThunk.fulfilled, (state, action) => {
-                state.lessonLoading = false;
+            .addCase(fetchLessons.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
                 state.lesson = action.payload;
             })
-            .addCase(fetchLessonByIdThunk.rejected, (state, action) => {
-                state.lessonLoading = false;
+            .addCase(fetchLessons.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
                 state.lessonError = action.payload;
             })
-            // Test related reducers
+            .addCase(fetchLessonById.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchLessonById.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.lesson = action.payload;
+            })
+            .addCase(fetchLessonById.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.lessonError = action.payload;
+            })
             .addCase(fetchTests.pending, (state) => {
-                state.testLoading = true;
-                state.testError = false;
+                state.isLoading = true;
             })
             .addCase(fetchTests.fulfilled, (state, action) => {
-                state.testLoading = false;
+                state.isLoading = false;
+                state.isSuccess = true;
                 state.tests = action.payload;
-                state.testError = false;
             })
             .addCase(fetchTests.rejected, (state, action) => {
-                state.testLoading = false;
-                state.testError = true;
-                state.testMessage = action.payload;
+                state.isLoading = false;
+                state.isError = true;
+                state.testError = action.payload;
             })
             .addCase(submitTest.pending, (state) => {
-                state.testLoading = true;
-                state.testError = false;
+                state.isLoading = true;
             })
             .addCase(submitTest.fulfilled, (state, action) => {
-                state.testLoading = false;
-                state.tests = [...state.tests, action.payload];
-                state.testError = false;
+                state.isLoading = false;
+                state.isSuccess = true;
             })
             .addCase(submitTest.rejected, (state, action) => {
-                state.testLoading = false;
-                state.testError = true;
-                state.testMessage = action.payload;
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
             })
             .addCase(fetchResults.pending, (state) => {
-                state.testLoading = true;
-                state.testError = false;
+                state.isLoading = true;
             })
             .addCase(fetchResults.fulfilled, (state, action) => {
-                state.testLoading = false;
+                state.isLoading = false;
+                state.isSuccess = true;
                 state.results = action.payload;
-                state.testError = false;
             })
             .addCase(fetchResults.rejected, (state, action) => {
-                state.testLoading = false;
-                state.testError = true;
-                state.testMessage = action.payload;
+                state.isLoading = false;
+                state.isError = true;
+                state.resultsError = action.payload;
             });
     },
 });
 
-export const { resetState } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

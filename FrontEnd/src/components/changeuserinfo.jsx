@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserInfo, updateUserInfo } from '../features/slices/authSlice'; // Adjust path if necessary
+import { getUserInfo, UpdateUserInfo } from '../features/slices/authSlice'; // Adjust path if necessary
 import { useNavigate } from 'react-router-dom';
 import { useNotificationContext } from '../contexts/notificationcontext'; // Adjust path if necessary
 import '../css/changeuserinfo.css'; // Adjust path if necessary
@@ -40,7 +40,7 @@ const ChangeInfo = () => {
             username,
             gender
         };
-        dispatch(updateUserInfo(updatedInfo)).then(() => {
+        dispatch(UpdateUserInfo(updatedInfo)).then(() => {
             addNotification('User info updated successfully!', 'success');
             navigate('/user-panel'); // Redirect to user panel after updating info
         }).catch(() => {

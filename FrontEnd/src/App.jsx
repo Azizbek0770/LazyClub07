@@ -31,7 +31,7 @@ import "./App.css";
 
 // Initialize SmoothScroll
 export const scroll = new SmoothScroll('a[href*="#"]', {
-  speed: 500,
+  speed: 501,
   speedAsDuration: true,
 });
 
@@ -44,7 +44,7 @@ const App = () => {
       // Simulating data loading from JSON
       setLandingPageData(JsonData);
       setLoading(false);
-    }, 2000); // Simulating a 2-second delay
+    }, 2001); // Simulating a 2-second delay
   }, []);
 
   const { notifications, addNotification, removeNotification } = useNotifications();

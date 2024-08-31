@@ -1,80 +1,63 @@
 import axios from 'axios';
-import { getAccessToken, setAccessToken, getRefreshToken, setRefreshToken } from '../../redux/accessStore';
-import { logout } from '../slices/authSlice';
 
 const BACKEND_DOMAIN = 'http://127.0.0.1:8000';
 const AUTH_API_URL = `${BACKEND_DOMAIN}/api/v1/auth`;
+const LESSON_API_URL = `${BACKEND_DOMAIN}/api/lessons`;
+const TEST_API_URL = `${BACKEND_DOMAIN}/test`;
+const RESULT_API_URL = `${BACKEND_DOMAIN}/api/results`;
 
-const axiosInstance = axios.create({
-    baseURL: AUTH_API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-axiosInstance.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response && error.response.status === 401) {
-            getStore().dispatch(logout());
-        }
-        return Promise.reject(error);
-    }
-);
-
-const handleError = (error, defaultMessage, notify) => {
+const handleError = (error, defaultMessage) => {
     if (error.response) {
-        console.error('Response error:', error.response.data);
-        notify(error.response.data.detail || defaultMessage, 'error');
-        throw new Error(error.response.data.detail || defaultMessage);
+        if (error.response.data) {
+            console.error('Response error:', error.response.data);
+            throw new Error(JSON.stringify(error.response.data));
+        } else {
+            console.error('Response error without data:', error.response);
+            throw new Error(defaultMessage);
+        }
     } else if (error.request) {
         console.error('No response received:', error.request);
-        notify('No response received from server', 'error');
         throw new Error('No response received from server');
     } else {
         console.error('Error setup:', error.message);
-        notify('Request setup error', 'error');
         throw new Error('Request setup error');
     }
 };
 
-const getToken = () => {
-    try {
-        const token = getAccessToken();
-        console.log('Token:', token); // Add this line to inspect the token
-        return token;
-    } catch (error) {
-        console.error('Error getting token:', error);
-        return null;
-    }
-};
-
 const authService = {
-    register: async (userData, notify) => {
+    register: async (userData) => {
         const REGISTER_URL = `${AUTH_API_URL}/users/`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
         try {
-            const response = await axios.post(REGISTER_URL, userData);
-            notify('Registration successful', 'success');
+            const response = await axios.post(REGISTER_URL, userData, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Registration failed', notify);
+            handleError(error, 'Registration failed');
         }
     },
 
-    login: async (userData, notify) => {
+    login: async (userData) => {
         const LOGIN_URL = `${AUTH_API_URL}/jwt/create/`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
         try {
-            const response = await axios.post(LOGIN_URL, userData);
+            const response = await axios.post(LOGIN_URL, userData, config);
             if (response.data.access) {
-                setAccessToken(response.data.access);
+                localStorage.setItem('token', response.data.access);
             }
             if (response.data.refresh) {
-                setRefreshToken(response.data.refresh);
+                localStorage.setItem('refreshToken', response.data.refresh);
             }
-            notify('Login successful', 'success');
             return response.data;
         } catch (error) {
-            handleError(error, 'Login failed', notify);
+            handleError(error, 'Login failed');
         }
     },
 
@@ -83,162 +66,175 @@ const authService = {
         localStorage.removeItem('refreshToken');
     },
 
-    getUserInfo: async (notify) => {
+    getUserInfo: async () => {
         const USER_INFO_URL = `${AUTH_API_URL}/users/me/`;
-        try {
-            const response = await axiosInstance.get(USER_INFO_URL, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            handleError(error, 'Fetching user info failed', notify);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
         }
-    },
-
-    updateUserInfo: async (userData, notify) => {
-        const API_URL = `${AUTH_API_URL}/users/me/`;
-        const token = getToken();
         const config = {
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
         };
         try {
-            const response = await axios.put(API_URL, userData, config);
-            notify('User info updated successfully', 'success');
+            const response = await axios.get(USER_INFO_URL, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Updating user info failed', notify);
+            handleError(error, 'Fetching user info failed');
         }
     },
 
-    uploadProfilePhoto: async (photoFile, notify) => {
-        const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`;
+    UpdateUserInfo: async (userData) => {
+        const response = await axios.put(AUTH_API_URL + '/user/', userData);
+        return response.data;
+    },
+
+    uploadProfilePhoto: async (photoFile) => {
+        const UPLOAD_PHOTO_URL = `${AUTH_API_URL}/users/upload_photo/`; // Ensure this endpoint is correct
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+    
         const formData = new FormData();
         formData.append('userphoto', photoFile);
+    
         const config = {
             headers: {
-                'Authorization': `Bearer ${getToken()}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
             },
         };
+    
         try {
-            const response = await axiosInstance.patch(UPLOAD_PHOTO_URL, formData, config);
-            notify('Profile photo uploaded successfully', 'success');
+            const response = await axios.patch(UPLOAD_PHOTO_URL, formData, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Error uploading profile photo', notify);
+            handleError(error, 'Error uploading profile photo');
         }
     },
 
-    resetPassword: async (resetData, notify) => {
+    resetPassword: async (resetData) => {
         const RESET_PASSWORD_URL = `${AUTH_API_URL}/users/reset_password/`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
         try {
-            const response = await axiosInstance.post(RESET_PASSWORD_URL, resetData);
-            notify('Password reset email sent successfully', 'success');
+            const response = await axios.post(RESET_PASSWORD_URL, resetData, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Password reset failed', notify);
+            handleError(error, 'Password reset failed');
         }
     },
 
-    confirmResetPassword: async (confirmData, notify) => {
+    confirmResetPassword: async (confirmData) => {
         const CONFIRM_RESET_PASSWORD_URL = `${AUTH_API_URL}/users/reset_password_confirm/`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
         try {
-            const response = await axiosInstance.post(CONFIRM_RESET_PASSWORD_URL, confirmData);
-            notify('Password reset successfully', 'success');
+            const response = await axios.post(CONFIRM_RESET_PASSWORD_URL, confirmData, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Password reset confirmation failed', notify);
+            handleError(error, 'Password reset confirmation failed');
         }
     },
 
-    activateAccount: async ({ uid, token }, notify) => {
+    activateAccount: async ({ uid, token }) => {
         const ACTIVATE_ACCOUNT_URL = `${AUTH_API_URL}/users/activation/`;
         const activateData = { uid, token };
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
         try {
-            const response = await axiosInstance.post(ACTIVATE_ACCOUNT_URL, activateData);
-            notify('Account activated successfully', 'success');
+            const response = await axios.post(ACTIVATE_ACCOUNT_URL, activateData, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Account activation failed', notify);
+            handleError(error, 'Account activation failed');
         }
     },
 
-    fetchLessons: async (notify) => {
-        const FETCH_LESSONS_URL = `${BACKEND_DOMAIN}/api/lessons/`;
+    fetchLessons: async () => {
+        const FETCH_LESSONS_URL = LESSON_API_URL;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        };
         try {
-            const response = await axiosInstance.get(FETCH_LESSONS_URL, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                }
-            });
+            const response = await axios.get(FETCH_LESSONS_URL, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Fetching lessons failed', notify);
+            handleError(error, 'Fetching lessons failed');
         }
     },
 
-    fetchLessonById: async (id, notify) => {
-        const FETCH_LESSON_BY_ID_URL = `${BACKEND_DOMAIN}/api/lessons/${id}/`;
+    fetchLessonById: async (id) => {
+        const FETCH_LESSON_BY_ID_URL = `${LESSON_API_URL}/${id}/`;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        };
         try {
-            const response = await axiosInstance.get(FETCH_LESSON_BY_ID_URL, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                }
-            });
+            const response = await axios.get(FETCH_LESSON_BY_ID_URL, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Fetching lesson failed', notify);
+            handleError(error, 'Fetching lesson by ID failed');
         }
     },
 
-    fetchTests: async (notify) => {
-        const FETCH_TESTS_URL = `${BACKEND_DOMAIN}/api/tests/`;
+    // Test related methods
+    fetchTests: async () => {
         try {
-            const response = await axiosInstance.get(FETCH_TESTS_URL, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                }
-            });
-            console.log('Fetch tests response:', response.data); // This should log an array
+            const response = await axios.get(TEST_API_URL);
             return response.data;
         } catch (error) {
-            handleError(error, 'Fetching tests failed', notify);
+            handleError(error, 'Fetching tests failed');
         }
     },
 
-    submitTest: async (answers, notify) => {
-        const SUBMIT_TEST_URL = `${BACKEND_DOMAIN}/api/tests/submit/`;
+    submitTest: async (answers) => {
         try {
-            const response = await axiosInstance.post(SUBMIT_TEST_URL, answers, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                }
-            });
-            notify('Test submitted successfully', 'success');
+            const response = await axios.post(`${TEST_API_URL}/submit`, { answers });
             return response.data;
         } catch (error) {
-            handleError(error, 'Submitting test failed', notify);
+            handleError(error, 'Submitting test failed');
         }
     },
 
-    fetchResults: async (notify) => {
-        const FETCH_RESULTS_URL = `${BACKEND_DOMAIN}/api/results/`;
+    fetchResults: async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        };
         try {
-            const response = await axiosInstance.get(FETCH_RESULTS_URL, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                }
-            });
+            const response = await axios.get(RESULT_API_URL, config);
             return response.data;
         } catch (error) {
-            handleError(error, 'Fetching results failed', notify);
+            handleError(error, 'Fetching results failed');
         }
-    },
+    }
 };
 
 export default authService;
